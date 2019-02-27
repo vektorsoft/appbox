@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  ~ Copyright (c) 2019. Vladimir Djurovic
+  ~
+  ~ This Source Code Form is subject to the terms of the Mozilla Public
+  ~ License, v. 2.0. If a copy of the MPL was not distributed with this
+  ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
+  -->
+
+<project>
+    <name>deployer</name>
+    <dependencyMgmtType>MAVEN</dependencyMgmtType>
+    <application application-id="1234-4566-abcd-4322" version="1.0.0-SNAPSHOT">
+        <info>
+            <description>Some description of application.</description>
+            <icons>
+                <icon path="data/icons/icon1.png" fileName="icon1.png" hash="123334455" size="2026"/>
+            </icons>
+            <name>deployer</name>
+        </info>
+        <jvm version="8">
+            <platform-specific-dependencies>
+                <linux>
+                    <dependency xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="mavenDependency" groupId="org.openjfx" artifactId="javafx-base" version="11" packaging="jar" classifier="linux" scope="CLASSPATH" fileName="javafx-base-11-linux.jar" hash="f8d1ced6047b010f1e3bb92dc060862179ce5897" size="750041"/>
+                    <dependency xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="mavenDependency" groupId="org.openjfx" artifactId="javafx-graphics" version="11" packaging="jar" classifier="linux" scope="CLASSPATH" fileName="javafx-graphics-11-linux.jar" hash="4ab9edd8d481a420044c473fdb5718ccdd35c836" size="4913077"/>
+                </linux>
+                <mac>
+                    <dependency xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="mavenDependency" groupId="org.openjfx" artifactId="javafx-graphics" version="11" packaging="jar" classifier="mac" scope="CLASSPATH" fileName="javafx-graphics-11-mac.jar" hash="0af47a6d3668d3ce1c61e1fe13c44471b6f8d469" size="4803296"/>
+                    <dependency xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="mavenDependency" groupId="org.openjfx" artifactId="javafx-base" version="11" packaging="jar" classifier="mac" scope="CLASSPATH" fileName="javafx-base-11-mac.jar" hash="4b060dad0affd866df9d959e064faa8a1a2f4af0" size="750040"/>
+                    <dependency xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="mavenDependency" groupId="org.openjfx" artifactId="javafx-controls" version="11" packaging="jar" classifier="mac" scope="CLASSPATH" fileName="javafx-controls-11-mac.jar" hash="e3a24a14e8732abc6dc173f15872dc63e2a32e16" size="2511057"/>
+                    <dependency xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="mavenDependency" groupId="org.openjfx" artifactId="javafx-fxml" version="11" packaging="jar" classifier="mac" scope="CLASSPATH" fileName="javafx-fxml-11-mac.jar" hash="e0f5bb81e21054b59f2ebfa727d40a90ee0260d3" size="127394"/>
+                </mac>
+                <windows>
+                    <dependency xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="mavenDependency" groupId="org.openjfx" artifactId="javafx-graphics" version="11" packaging="jar" classifier="win" scope="CLASSPATH" fileName="javafx-graphics-11-win.jar" hash="9345c7ea43dbcc73a62eca5332717b4ce617e6c6" size="6016908"/>
+                    <dependency xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="mavenDependency" groupId="org.openjfx" artifactId="javafx-base" version="11" packaging="jar" classifier="win" scope="CLASSPATH" fileName="javafx-base-11-win.jar" hash="ad3a4acfaa28b484d30c40c1f009445cc3f6e68b" size="750040"/>
+                    <dependency xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="mavenDependency" groupId="org.openjfx" artifactId="javafx-fxml" version="11" packaging="jar" classifier="win" scope="CLASSPATH" fileName="javafx-fxml-11-win.jar" hash="d5ff9262ef49d166db658d15f37e3ecff38fde4b" size="127394"/>
+                    <dependency xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="mavenDependency" groupId="org.openjfx" artifactId="javafx-controls" version="11" packaging="jar" classifier="win" scope="CLASSPATH" fileName="javafx-controls-11-win.jar" hash="af8d24de44e16a19ae959028eb23a48c145fb682" size="2511103"/>
+                </windows>
+            </platform-specific-dependencies>
+            <dependencies>
+                <dependency xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="mavenDependency" groupId="com.vektorsoft.xapps" artifactId="deployer" version="1.0.0-SNAPSHOT" packaging="jar" scope="CLASSPATH" fileName="deployer-1.0.0-SNAPSHOT.jar" hash="21f05221b52e17b8ca8c4b24dfd290cd594c4a58" size="125230"/>
+                <dependency xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="mavenDependency" groupId="com.sun.xml.bind" artifactId="jaxb-core" version="2.3.0" packaging="jar" scope="CLASSPATH" fileName="jaxb-core-2.3.0.jar" hash="d044c784e41d026778693fb44a8026c1fd9a7506" size="255502"/>
+                <dependency xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="mavenDependency" groupId="commons-io" artifactId="commons-io" version="2.5" packaging="jar" scope="CLASSPATH" fileName="commons-io-2.5.jar" hash="2852e6e05fbb95076fc091f6d1780f1f8fe35e0f" size="208700"/>
+                <dependency xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="mavenDependency" groupId="javax.xml.bind" artifactId="jaxb-api" version="2.3.1" packaging="jar" scope="CLASSPATH" fileName="jaxb-api-2.3.1.jar" hash="8531ad5ac454cc2deb9d4d32c40c4d7451939b5d" size="128076"/>
+                <dependency xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="mavenDependency" groupId="org.jetbrains.kotlin" artifactId="kotlin-stdlib" version="1.3.10" packaging="jar" scope="CLASSPATH" fileName="kotlin-stdlib-1.3.10.jar" hash="b178c1501609c6e4ee8be635513cb023a466457d" size="1181292"/>
+                <dependency xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="mavenDependency" groupId="org.openjfx" artifactId="javafx-controls" version="11" packaging="jar" scope="CLASSPATH" fileName="javafx-controls-11.jar" hash="58d961774262ec972bf304e16c154a8e18c2050b" size="306"/>
+                <dependency xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="mavenDependency" groupId="org.openjfx" artifactId="javafx-graphics" version="11" packaging="jar" scope="CLASSPATH" fileName="javafx-graphics-11.jar" hash="a736dd079047ec0b72b8c4970842a5c5e0c19f2f" size="306"/>
+                <dependency xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="mavenDependency" groupId="ch.qos.logback" artifactId="logback-core" version="1.2.3" packaging="jar" scope="CLASSPATH" fileName="logback-core-1.2.3.jar" hash="864344400c3d4d92dfeb0a305dc87d953677c03c" size="471901"/>
+                <dependency xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="mavenDependency" groupId="org.apache.maven.shared" artifactId="maven-invoker" version="3.0.1" packaging="jar" scope="CLASSPATH" fileName="maven-invoker-3.0.1.jar" hash="d98b7d7aeb575a0d677a3c164232e86c6cd42f11" size="33031"/>
+                <dependency xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="mavenDependency" groupId="org.openjfx" artifactId="javafx-fxml" version="11" packaging="jar" scope="CLASSPATH" fileName="javafx-fxml-11.jar" hash="8e523177e8fd7c2c5e54ba29fe09f65ee60e7ba3" size="302"/>
+                <dependency xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="mavenDependency" groupId="com.sun.xml.bind" artifactId="jaxb-impl" version="2.3.1" packaging="jar" scope="CLASSPATH" fileName="jaxb-impl-2.3.1.jar" hash="a1a12b85ba1435b4189e065f7dafcc3fb9410d38" size="1099204"/>
+                <dependency xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="mavenDependency" groupId="org.codehaus.plexus" artifactId="plexus-component-annotations" version="1.7.1" packaging="jar" scope="CLASSPATH" fileName="plexus-component-annotations-1.7.1.jar" hash="862abca6deff0fff241a835a33d22559e9132069" size="4288"/>
+                <dependency xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="mavenDependency" groupId="org.jetbrains.kotlin" artifactId="kotlin-stdlib-common" version="1.3.10" packaging="jar" scope="CLASSPATH" fileName="kotlin-stdlib-common-1.3.10.jar" hash="1b19d99229dcedad7caf50534dce38fe82845269" size="151024"/>
+                <dependency xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="mavenDependency" groupId="ch.qos.logback" artifactId="logback-classic" version="1.2.3" packaging="jar" scope="CLASSPATH" fileName="logback-classic-1.2.3.jar" hash="7c4f3c474fb2c041d8028740440937705ebb473a" size="290339"/>
+                <dependency xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="mavenDependency" groupId="org.openjfx" artifactId="javafx-base" version="11" packaging="jar" scope="CLASSPATH" fileName="javafx-base-11.jar" hash="09fcd3e8e3227ec97bf503f7991fad1f3b14d005" size="302"/>
+                <dependency xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="mavenDependency" groupId="javax.activation" artifactId="javax.activation-api" version="1.2.0" packaging="jar" scope="CLASSPATH" fileName="javax.activation-api-1.2.0.jar" hash="85262acf3ca9816f9537ca47d5adeabaead7cb16" size="56674"/>
+                <dependency xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="mavenDependency" groupId="org.slf4j" artifactId="slf4j-api" version="1.7.25" packaging="jar" scope="MODULE_PATH" fileName="slf4j-api-1.7.25.jar" hash="da76ca59f6a57ee3102f8f9bd9cee742973efa8a" size="41203"/>
+                <dependency xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="mavenDependency" groupId="org.apache.maven.shared" artifactId="maven-shared-utils" version="3.2.1" packaging="jar" scope="MODULE_PATH" fileName="maven-shared-utils-3.2.1.jar" hash="08dd4dfb1d2d8b6969f6462790f82670bcd35ce2" size="166562"/>
+                <dependency xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="mavenDependency" groupId="org.jetbrains" artifactId="annotations" version="13.0" packaging="jar" scope="MODULE_PATH" fileName="annotations-13.0.jar" hash="919f0dfe192fb4e063e7dacadee7f8bb9a2672a9" size="17536"/>
+            </dependencies>
+        </jvm>
+        <server base-url="http://localhost:8080" name="My Server"/>
+    </application>
+</project>
