@@ -1,4 +1,12 @@
 /*
+ * Copyright (c) 2019. Vladimir Djurovic
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -19,7 +27,7 @@ import java.nio.file.StandardCopyOption;
  */
 public final class TestUtil {
     
-    public static final String MOCK_HASH = "904b904fa8a71384391921581964fdf829c5535046c948f1e101b00083bfd99c";
+    public static final String MOCK_HASH = "f1b714039e8a09e079e86f6b436386992d2c4c05";
 
     public static void createTestContent() throws Exception {
 	File contentDir = new File("target","content");

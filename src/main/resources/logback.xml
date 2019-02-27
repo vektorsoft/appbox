@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-
-Copyright (c) Vektorsoft Ltd. (http://www.vektorsoft.com)
-
-Unauthorized copying of this file, or any part of it, via any medium ,is strictly prohibited.
-Content of this file is proprietary and confidential.
-
--->
+  ~ Copyright (c) 2019. Vladimir Djurovic
+  ~
+  ~ This Source Code Form is subject to the terms of the Mozilla Public
+  ~ License, v. 2.0. If a copy of the MPL was not distributed with this
+  ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
+  -->
 <configuration>
     <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
