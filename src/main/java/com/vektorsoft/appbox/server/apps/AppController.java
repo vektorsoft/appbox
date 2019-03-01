@@ -7,9 +7,9 @@
  */
 
 
-package com.vektorsoft.appbox.server.controller;
+package com.vektorsoft.appbox.server.apps;
 
-import com.vektorsoft.appbox.server.model.Application;
+import com.vektorsoft.appbox.server.apps.Application;
 import java.util.List;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,13 +30,13 @@ public class AppController {
 	Application app1 = new Application();
 	app1.setId("app1");
 	app1.setName("My App");
-	app1.setVersion("1.0.0");
-	app1.setIconUrl("http://myicn.com/icon.png");
+//	app1.setVersion("1.0.0");
+//	app1.setIconUrl("http://myicn.com/icon.png");
 	
 	Application app2 = new Application();
 	app2.setId("app2");
 	app2.setName("Another App");
-	app2.setVersion("1.0.2");
+//	app2.setVersion("1.0.2");
 	app2.setDescription("My great app");
 	
 	return List.of(app1, app2);

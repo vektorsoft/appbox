@@ -1,3 +1,11 @@
+<!--
+  ~ Copyright (c) 2019. Vladimir Djurovic
+  ~
+  ~ This Source Code Form is subject to the terms of the Mozilla Public
+  ~ License, v. 2.0. If a copy of the MPL was not distributed with this
+  ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
+  -->
+
 <databaseChangeLog
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -6,7 +14,17 @@
     http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
     <changeSet id="initial" author="vdjurovic" dbms="postgres">
-
+        <createTable tableName="application">
+            <column name="app_id" type="string" >
+                <constraints nullable="false" primaryKey="true" />
+            </column>
+            <column name="app_name" type="string">
+                <constraints nullable="false" />
+            </column>
+            <column name="headline" type="string" />
+            <column name="description" type="string" />
+            <column name="app_img_url" type="string" />
+        </createTable>
     </changeSet>
 
 </databaseChangeLog>

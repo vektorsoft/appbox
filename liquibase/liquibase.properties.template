@@ -4,6 +4,6 @@
 # Make sure that file liquibase.properties is not commited to git, since it contains per-developer information
 
 driver=org.postgresql.Driver
-url=jdbc:postgresq://localhost:5432/dbname
+url=jdbc:postgresql://localhost:5432/dbname
 username=user
 password=pass

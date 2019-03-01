@@ -14,14 +14,19 @@
 
 package com.vektorsoft.appbox.server.test;
 
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import de.flapdoodle.embed.process.runtime.Network;
+import org.springframework.context.annotation.*;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.test.context.TestPropertySource;
+import ru.yandex.qatools.embed.postgresql.PostgresExecutable;
+import ru.yandex.qatools.embed.postgresql.PostgresProcess;
+import ru.yandex.qatools.embed.postgresql.PostgresStarter;
+import ru.yandex.qatools.embed.postgresql.config.AbstractPostgresConfig;
+import ru.yandex.qatools.embed.postgresql.config.PostgresConfig;
+import ru.yandex.qatools.embed.postgresql.distribution.Version;
 
 import javax.sql.DataSource;
+import java.io.IOException;
 
 /**
  *
@@ -29,8 +34,38 @@ import javax.sql.DataSource;
  */
 @Configuration
 @ComponentScan (basePackages = {"com.vektorsoft.appbox.server"})
-@PropertySource(value = "classpath:application.properties")
+@PropertySource(value = "classpath:test.properties")
+//@PropertySource(value = "classpath:application.properties")
 public class TestConfig {
 
+	@Bean
+	public PostgresConfig postgresConfig() throws IOException {
+		final PostgresConfig postgresConfig = new PostgresConfig(Version.V9_6_11,
+				new AbstractPostgresConfig.Net("localhost", 60000),
+				new AbstractPostgresConfig.Storage("appbox"),
+				new AbstractPostgresConfig.Timeout(),
+				new AbstractPostgresConfig.Credentials("user", "pass")
+		);
+		return postgresConfig;
+	}
+
+	@Bean
+	@DependsOn("postgresProcess")
+	public DataSource dataSource(PostgresConfig config) {
+		DriverManagerDataSource ds = new DriverManagerDataSource();
+		ds.setDriverClassName("org.postgresql.Driver");
+		ds.setUrl("jdbc:postgresql://localhost:60000/appbox");
+		ds.setUsername(config.credentials().username());
+		ds.setPassword(config.credentials().password());
+		return ds;
+	}
+
+	@Bean(destroyMethod = "stop")
+	public PostgresProcess postgresProcess(PostgresConfig config) throws IOException {
+		PostgresStarter<PostgresExecutable, PostgresProcess> runtime = PostgresStarter.getDefaultInstance();
+		PostgresExecutable exec = runtime.prepare(config);
+		PostgresProcess process = exec.start();
+		return process;
+	}
 
 }
