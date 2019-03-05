@@ -35,7 +35,6 @@ import java.io.IOException;
 @Configuration
 @ComponentScan (basePackages = {"com.vektorsoft.appbox.server"})
 @PropertySource(value = "classpath:test.properties")
-//@PropertySource(value = "classpath:application.properties")
 public class TestConfig {
 
 	@Bean

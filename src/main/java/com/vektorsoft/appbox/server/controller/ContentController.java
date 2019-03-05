@@ -11,7 +11,7 @@ package com.vektorsoft.appbox.server.controller;
 import com.vektorsoft.appbox.server.exception.ContentException;
 import com.vektorsoft.appbox.server.model.CpuArch;
 import com.vektorsoft.appbox.server.model.OS;
-import com.vektorsoft.appbox.server.content.ContentStorageService;
+import com.vektorsoft.appbox.server.content.ContentStorage;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ContentController {
 
     @Autowired
-    private ContentStorageService storageService;
+    private ContentStorage storageService;
 
     @RequestMapping(method = RequestMethod.GET, value = "/apps/{appId}/content/config/{os}/{arch}", produces = {MediaType.APPLICATION_XML_VALUE})
     public @ResponseBody

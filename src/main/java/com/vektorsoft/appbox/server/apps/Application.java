@@ -9,14 +9,11 @@
 
 package com.vektorsoft.appbox.server.apps;
 
-import com.vektorsoft.appbox.server.util.IdGenerator;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
+import org.modelmapper.ModelMapper;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  *
@@ -26,18 +23,25 @@ import javax.persistence.Id;
 @Entity(name = "application")
 public class Application {
 
-    @Id
-    @GenericGenerator(name = "id_generator", strategy = "com.vektorsoft.appbox.server.util.IdGenerator")
-    @GeneratedValue(generator = "id_generator")
-    @Column(name = "app_id")
-    private String id;
+	@Transient
+	private final ModelMapper mapper = new ModelMapper();
 
-    @Column(name = "app_name")
-    private String name;
-    private String headline;
-    private String description;
+	@Id
+	@GenericGenerator(name = "id_generator", strategy = "com.vektorsoft.appbox.server.util.IdGenerator")
+	@GeneratedValue(generator = "id_generator")
+	@Column(name = "app_id")
+	private String id;
 
-    @Column(name = "app_img_url")
-    private String appImageUrl;
-    
+	@Column(name = "app_name")
+	private String name;
+	private String headline;
+	private String description;
+
+	@Column(name = "app_img_hash")
+	private String appImageHash;
+
+	public ApplicationDTO convertToDto() {
+		return mapper.map(this, ApplicationDTO.class);
+	}
+
 }

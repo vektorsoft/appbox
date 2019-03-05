@@ -19,7 +19,7 @@ import java.io.InputStream;
  * @author Vladimir Djurovic <vdjurovic@vektorsoft.com>
  */
 
-public interface ContentStorageService {
+public interface ContentStorage {
 
     InputStream getAppRunConfigFile(String applicationId, OS os, CpuArch arch) throws ContentException;
     
@@ -28,4 +28,13 @@ public interface ContentStorageService {
     InputStream getBinaryData(String hash) throws ContentException;
     
     void createContent(InputStream in, String expectedHash) throws ContentException;
+
+    /**
+     * Creates content from input stream and returns it's hash.
+     *
+     * @param in input stream data
+     * @return content hash (SHA-1)
+     * @throws ContentException if an error occurs
+     */
+    String createContent(InputStream in) throws ContentException;
 }

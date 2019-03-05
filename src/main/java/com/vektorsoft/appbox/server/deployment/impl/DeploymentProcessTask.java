@@ -8,11 +8,10 @@
 
 package com.vektorsoft.appbox.server.deployment.impl;
 
-import com.vektorsoft.appbox.server.content.ContentStorageService;
+import com.vektorsoft.appbox.server.content.ContentStorage;
 import com.vektorsoft.appbox.server.exception.ContentException;
 import com.vektorsoft.appbox.server.exception.DeploymentException;
 import com.vektorsoft.appbox.server.util.AppBoxConstants;
-import com.vektorsoft.xapps.deployer.client.HashCalculator;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,6 +21,8 @@ import java.nio.file.Path;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+
+import com.vektorsoft.appbox.server.util.HashUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +46,7 @@ public class DeploymentProcessTask implements Runnable {
     private final File deploymentArchive;
 
     @Autowired
-    private ContentStorageService storageService;
+    private ContentStorage storageService;
 
     public DeploymentProcessTask(File file) {
 	this.deploymentArchive = file;
@@ -100,7 +101,7 @@ public class DeploymentProcessTask implements Runnable {
 	try {
 	    LOGGER.debug("Creating content for hash {}", hash);
 	    Path startPath = Path.of(deploymentArchive.getAbsolutePath(), "content");
-	    Path path = HashCalculator.createHashPath(startPath.toString(), hash);
+	    Path path = HashUtil.createLocalHashPath(startPath, hash);
 	    LOGGER.debug("Copying content from {}", path.toString());
 	    InputStream in = new BufferedInputStream(new FileInputStream(path.toFile()));
 	    storageService.createContent(in, hash);

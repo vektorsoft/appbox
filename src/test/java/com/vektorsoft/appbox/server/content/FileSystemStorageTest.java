@@ -15,46 +15,50 @@ package com.vektorsoft.appbox.server.content;
 
 import com.vektorsoft.appbox.server.test.TestConfig;
 import com.vektorsoft.appbox.server.test.TestUtil;
+
 import java.io.InputStream;
+
 import org.junit.AfterClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.Assert.*;
+
 import org.junit.BeforeClass;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 /**
- *
  * @author Vladimir Djurovic <vdjurovic@vektorsoft.com>
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {TestConfig.class})
-@TestPropertySource(properties = "content.storage.root=target/content")
-public class FileSystemStorageServiceTest {
+public class FileSystemStorageTest {
 
-    @Autowired
-    @Qualifier("fileSystemStorageService")
-    private ContentStorageService storageService;
+	private final String testString = "This is test string";
+	private final String testString1 = "Another test string";
 
-    @BeforeClass
-    public static void setupContent() throws Exception {
-	TestUtil.createTestContent();
+	@Autowired
+	@Qualifier("fileSystemStorage")
+	private ContentStorage storageService;
 
-    }
+	@BeforeClass
+	public static void setupContent() throws Exception {
+		TestUtil.createTestContent();
 
-    @AfterClass
-    public static void clearContent() {
-	TestUtil.clearTestContent();
-    }
+	}
 
-    @Test
-    public void testGetBinaryData() throws Exception {
-	InputStream is = storageService.getBinaryData(TestUtil.MOCK_HASH);
-	assertNotNull(is);
-    }
+//	@AfterClass
+//	public static void clearContent() {
+//		TestUtil.clearTestContent();
+//	}
+
+	@Test
+	public void testGetBinaryData() throws Exception {
+		InputStream is = storageService.getBinaryData(TestUtil.MOCK_HASH);
+		assertNotNull(is);
+	}
 }
