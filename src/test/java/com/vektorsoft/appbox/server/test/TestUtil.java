@@ -35,6 +35,16 @@ public final class TestUtil {
 		File contentDir = new File("target", "content");
 		File dataDir = new File(contentDir, "content");
 		dataDir.mkdirs();
+		// create applications directory
+		File appsDir = new File(contentDir, "apps");
+		if(!appsDir.exists()) {
+			appsDir.mkdirs();
+		}
+		// create launchers directory
+		File launchersDir = new File(contentDir, "launchers");
+		if(!launchersDir.exists()) {
+			launchersDir.mkdirs();
+		}
 		String hash = DIGEST.digestAsHex(new File(FileSystemContentLocatorTest.class.getResource("/content/mock_content").toURI()));
 		String[] parts = new String[]{
 				hash.substring(0, 2),
@@ -50,8 +60,5 @@ public final class TestUtil {
 
 	}
 
-	public static void clearTestContent() {
-		File contentDir = new File("target", "content");
-		contentDir.delete();
-	}
+
 }

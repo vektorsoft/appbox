@@ -51,10 +51,6 @@ public class FileSystemStorageTest {
 
 	}
 
-//	@AfterClass
-//	public static void clearContent() {
-//		TestUtil.clearTestContent();
-//	}
 
 	@Test
 	public void testGetBinaryData() throws Exception {

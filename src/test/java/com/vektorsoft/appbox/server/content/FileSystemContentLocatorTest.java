@@ -14,6 +14,9 @@
 
 package com.vektorsoft.appbox.server.content;
 
+import com.vektorsoft.appbox.server.exception.ContentException;
+import com.vektorsoft.appbox.server.model.CpuArch;
+import com.vektorsoft.appbox.server.model.OS;
 import com.vektorsoft.appbox.server.test.TestConfig;
 
 import java.net.URI;
@@ -51,10 +54,6 @@ public class FileSystemContentLocatorTest {
 
 	}
 
-//	@AfterClass
-//	public static void clearContent() {
-//		clearTestContent();
-//	}
 
 	@Test
 	public void testContentExists() throws Exception {
@@ -62,10 +61,29 @@ public class FileSystemContentLocatorTest {
 		assertTrue(result);
 	}
 
+	@Test(expected = ContentException.class)
+	public void testContentExistsInvalidHash() throws Exception {
+		contentLocator.contentExists("");
+	}
+
 	@Test
 	public void testContentUrl() throws Exception {
 		URI uri = contentLocator.getContentLocation(MOCK_HASH);
 		assertEquals("file", uri.getScheme());
 		assertTrue(uri.toString().endsWith(MOCK_HASH));
+	}
+
+	@Test
+	public void testAppConfigLocation() throws Exception {
+		URI uri = contentLocator.getApplicationConfigLocation("appid", OS.LINUX, CpuArch.X64);
+		assertEquals("file", uri.getScheme());
+		assertTrue(uri.toString().endsWith("config_linux_x64.xml"));
+	}
+
+	@Test
+	public void testLauncherLocation() throws Exception {
+		URI uri = contentLocator.getAppLauncherLocation("appid", OS.MAC, CpuArch.X86);
+		assertEquals("file", uri.getScheme());
+		assertTrue(uri.toString().endsWith("launcher_mac_x86"));
 	}
 }
