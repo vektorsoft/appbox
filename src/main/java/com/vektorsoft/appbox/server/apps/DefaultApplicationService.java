@@ -8,8 +8,11 @@
 
 package com.vektorsoft.appbox.server.apps;
 
+import com.vektorsoft.appbox.server.content.ContentStorage;
+import com.vektorsoft.appbox.server.exception.ContentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
@@ -22,6 +25,8 @@ public class DefaultApplicationService implements ApplicationService {
 
 	@Autowired
 	private ApplicationRepository applicationRepository;
+	@Autowired
+	private ContentStorage contentStorage;
 
 	@Override
 	public Application createApplication(Application app) {
@@ -34,12 +39,15 @@ public class DefaultApplicationService implements ApplicationService {
 	}
 
 	@Override
-	public void setApplicationImage(InputStream in, String appId) {
-
+	public void setApplicationImage(InputStream in, String appId) throws ContentException {
+		String hash = contentStorage.createContent(in);
+		Application app = applicationRepository.findById(appId).get();
+		app.setAppImageHash(hash);
+		applicationRepository.save(app);
 	}
 
 	@Override
-	public Page<Application> getApplications() {
-		return null;
+	public Page<Application> getApplications(Pageable pageable) {
+		 return applicationRepository.findAll(pageable);
 	}
 }

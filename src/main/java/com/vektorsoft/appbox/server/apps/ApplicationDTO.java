@@ -8,15 +8,19 @@
 
 package com.vektorsoft.appbox.server.apps;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
 
 /**
+ * DTO for application entity.
+ *
  * @author Vladimir Djurovic
  */
 @Data
 public class ApplicationDTO {
 
+	@JsonIgnore
 	private final ModelMapper mapper = new ModelMapper();
 
 	private String id;

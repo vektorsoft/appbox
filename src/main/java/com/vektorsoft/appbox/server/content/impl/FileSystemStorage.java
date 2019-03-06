@@ -27,6 +27,7 @@ import java.io.*;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
 /**
  * @author Vladimir Djurovic <vdjurovic@vektorsoft.com>
@@ -67,7 +68,7 @@ public class FileSystemStorage implements ContentStorage {
 	public void createContent(InputStream in, String expectedHash) throws ContentException {
 		if (contentLocator.contentExists(expectedHash)) {
 			LOGGER.error("Content with hash {} already exists", expectedHash);
-			throw new ContentException("Content with given has already exists. Hash: " + expectedHash);
+			return;
 		}
 		Path contentDir = Path.of(contentMapping.getContentStorageLocation());
 		Path contentPath = HashUtil.createLocalHashPath(contentDir, expectedHash);
@@ -93,8 +94,12 @@ public class FileSystemStorage implements ContentStorage {
 		Path contentDir = Path.of(contentMapping.getContentStorageLocation());
 		try {
 			File tmpFile = File.createTempFile("content_", "");
-			Files.copy(in, tmpFile.toPath());
+			Files.copy(in, tmpFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 			String hash = DIGEST.digestAsHex(tmpFile);
+			if (contentLocator.contentExists(hash)) {
+				LOGGER.error("Content with hash {} already exists", hash);
+				return hash;
+			}
 			Path contentPath = HashUtil.createLocalHashPath(contentDir, hash);
 			boolean result = contentPath.toFile().getParentFile().mkdirs();
 			if (!result) {

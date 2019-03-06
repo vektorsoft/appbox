@@ -44,4 +44,10 @@ public class Application {
 		return mapper.map(this, ApplicationDTO.class);
 	}
 
+	public ApplicationDTO convertToDto(String serverUrl) {
+		var dto = mapper.map(this, ApplicationDTO.class);
+		dto.setAppImageUrl(serverUrl + "/applications/" + id + "/img");
+		return dto;
+	}
+
 }

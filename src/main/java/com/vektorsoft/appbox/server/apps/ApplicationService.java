@@ -8,7 +8,9 @@
 
 package com.vektorsoft.appbox.server.apps;
 
+import com.vektorsoft.appbox.server.exception.ContentException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.io.InputStream;
 
@@ -18,7 +20,7 @@ public interface ApplicationService {
 
 	Application getApplication(String id);
 
-	void setApplicationImage(InputStream in, String appId);
+	void setApplicationImage(InputStream in, String appId) throws ContentException;
 
-	Page<Application> getApplications();
+	Page<Application> getApplications(Pageable pageable);
 }

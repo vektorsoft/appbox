@@ -8,8 +8,9 @@
 
 package com.vektorsoft.appbox.server.apps;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface ApplicationRepository extends CrudRepository<Application, String> {
+
+public interface ApplicationRepository extends PagingAndSortingRepository<Application, String> {
 
 }
