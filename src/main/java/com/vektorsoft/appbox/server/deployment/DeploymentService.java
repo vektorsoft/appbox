@@ -9,6 +9,7 @@
 
 package com.vektorsoft.appbox.server.deployment;
 
+import com.vektorsoft.appbox.server.deployment.entity.AppDeploymentStatus;
 import com.vektorsoft.appbox.server.exception.DeploymentException;
 import java.nio.file.Path;
 
@@ -20,7 +21,9 @@ public interface DeploymentService {
 
     String processConfigData(String configData) throws DeploymentException;
     
-    void processContent(Path deploymentPath) throws DeploymentException;
+    void processContent(Path deploymentPath, String appId) throws DeploymentException;
     
     boolean validateDeploymentContent(Path deploymentPath) throws DeploymentException;
+
+    AppDeploymentStatus getDeploymentStatus(String id);
 }

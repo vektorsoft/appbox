@@ -27,4 +27,21 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="deployment_status" author="vdjurovic" dbms="postgresql">
+        <createTable tableName="app_deployment_status">
+            <column name="id" type="varchar">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="app_id" type="varchar" />
+            <column name="submitted_at" type="timestamp" defaultValueComputed="now()" />
+            <column name="current_status" type="varchar">
+                <constraints nullable="false" />
+            </column>
+            <column name="details" type="varchar" />
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="app_deployment_status" baseColumnNames="app_id" constraintName="app_fkey" referencedTableName="application"
+                                 referencedColumnNames="app_id" />
+    </changeSet>
+
 </databaseChangeLog>

@@ -8,7 +8,11 @@
 
 package com.vektorsoft.appbox.server.deployment.impl;
 
+import com.vektorsoft.appbox.server.apps.Application;
+import com.vektorsoft.appbox.server.apps.ApplicationRepository;
 import com.vektorsoft.appbox.server.content.ContentLocator;
+import com.vektorsoft.appbox.server.deployment.AppDeploymentStatusRepository;
+import com.vektorsoft.appbox.server.deployment.entity.AppDeploymentStatus;
 import com.vektorsoft.appbox.server.exception.ContentException;
 import com.vektorsoft.appbox.server.exception.DeploymentException;
 import com.vektorsoft.appbox.server.deployment.DeploymentService;
@@ -61,6 +65,10 @@ public class DefaultDeploymentService implements DeploymentService {
 
 	@Autowired
 	private ContentLocator contentLocator;
+	@Autowired
+	private ApplicationRepository appRepository;
+	@Autowired
+	private AppDeploymentStatusRepository deploymentStatusRepository;
 
 	@Autowired
 	private Function<File, DeploymentProcessTask> deploymentTaskFactory;
@@ -78,8 +86,10 @@ public class DefaultDeploymentService implements DeploymentService {
 	}
 
 	@Override
-	public void processContent(Path deploymentPath) throws DeploymentException {
+	public void processContent(Path deploymentPath, String appId) throws DeploymentException {
+		Application app = appRepository.findById(appId).get();
 		DeploymentProcessTask task = deploymentTaskFactory.apply(deploymentPath.toFile());
+		task.init(app);
 		executorService.submit(task);
 		LOGGER.info("Deployment task submitted. Deployment archive: {}", deploymentPath.getFileName().toString());
 	}
@@ -98,6 +108,11 @@ public class DefaultDeploymentService implements DeploymentService {
 		}
 		return true;
 
+	}
+
+	@Override
+	public AppDeploymentStatus getDeploymentStatus(String id) {
+		return deploymentStatusRepository.findById(id).get();
 	}
 
 	private Document createXmlDocument(String configData) throws DeploymentException {

@@ -8,10 +8,15 @@
 
 package com.vektorsoft.appbox.server.deployment.impl;
 
+import com.vektorsoft.appbox.server.apps.Application;
 import com.vektorsoft.appbox.server.content.ContentStorage;
+import com.vektorsoft.appbox.server.deployment.AppDeploymentStatusRepository;
+import com.vektorsoft.appbox.server.deployment.entity.AppDeploymentStatus;
+import com.vektorsoft.appbox.server.deployment.entity.DeploymentStatus;
 import com.vektorsoft.appbox.server.exception.ContentException;
 import com.vektorsoft.appbox.server.exception.DeploymentException;
 import com.vektorsoft.appbox.server.util.AppBoxConstants;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,76 +46,96 @@ import org.zeroturnaround.zip.ZipUtil;
  */
 public class DeploymentProcessTask implements Runnable {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DeploymentProcessTask.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DeploymentProcessTask.class);
 
-    private final File deploymentArchive;
+	private final File deploymentArchive;
+	private AppDeploymentStatus status;
 
-    @Autowired
-    private ContentStorage storageService;
+	@Autowired
+	private ContentStorage storageService;
+	@Autowired
+	private AppDeploymentStatusRepository deploymentStatusRepo;
 
-    public DeploymentProcessTask(File file) {
-	this.deploymentArchive = file;
-    }
-
-    @Override
-    public void run() {
-	ZipUtil.explode(deploymentArchive);
-	File configFile = new File(deploymentArchive, AppBoxConstants.DEPLOYMENT_CONFIG_FILE_NAME);
-	if (!configFile.exists()) {
-	    LOGGER.error("Configuration files does not exist");
-	    return;
+	public DeploymentProcessTask(File file) {
+		this.deploymentArchive = file;
 	}
-	try {
-	    Document configDoc = createXmlDocument(configFile);
-	    iterateXmlNodes(configDoc, "icon");
-	    iterateXmlNodes(configDoc, "dependency");
-	} catch (DeploymentException | ContentException ex) {
-	    LOGGER.error("Failed to deploy archive", ex);
-	} 
 
-    }
-
-    private Document createXmlDocument(File configFile) throws DeploymentException {
-	try {
-	    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-	    DocumentBuilder builder = dbf.newDocumentBuilder();
-	    Document doc = builder.parse(configFile);
-	    return doc;
-	} catch (SAXException | ParserConfigurationException | IOException ex) {
-	    throw new DeploymentException(ex);
-	}
-    }
-
-    private void iterateXmlNodes(Document doc, String tagName) throws DeploymentException, ContentException {
-	NodeList tagNodes = doc.getElementsByTagName(tagName);
-	for (int i = 0; i < tagNodes.getLength(); i++) {
-	    Node node = tagNodes.item(i);
-	    if (node.getNodeType() == Node.ELEMENT_NODE) {
-		Element element = (Element) node;
-		String hash = element.getAttribute("hash");
-		if (hash == null || hash.isEmpty() || hash.isBlank()) {
-		    LOGGER.error("Invalid hash found");
-		    throw new DeploymentException("Hash can not be empty");
+	@Override
+	public void run() {
+		LOGGER.info("Start processing deployment archive {}", deploymentArchive.getName());
+		status.setCurrentStatus(DeploymentStatus.IN_PROGRESS);
+		deploymentStatusRepo.save(status);
+		LOGGER.debug("Setting deployment task status to {}", DeploymentStatus.IN_PROGRESS);
+		ZipUtil.explode(deploymentArchive);
+		File configFile = new File(deploymentArchive, AppBoxConstants.DEPLOYMENT_CONFIG_FILE_NAME);
+		if (!configFile.exists()) {
+			LOGGER.error("Configuration files does not exist");
+			return;
 		}
-		uploadFile(hash);
-	    }
-	}
-    }
+		try {
+			Document configDoc = createXmlDocument(configFile);
+			iterateXmlNodes(configDoc, "icon");
+			iterateXmlNodes(configDoc, "dependency");
 
-    private void uploadFile(String hash) throws ContentException {
-	try {
-	    LOGGER.debug("Creating content for hash {}", hash);
-	    Path startPath = Path.of(deploymentArchive.getAbsolutePath(), "content");
-	    Path path = HashUtil.createLocalHashPath(startPath, hash);
-	    LOGGER.debug("Copying content from {}", path.toString());
-	    InputStream in = new BufferedInputStream(new FileInputStream(path.toFile()));
-	    storageService.createContent(in, hash);
-	    in.close();
-	} catch (IOException ex) {
-	    LOGGER.error("Failed to create content", ex);
-	    throw new ContentException(ex);
+			status.setCurrentStatus(DeploymentStatus.SUCCESS);
+			deploymentStatusRepo.save(status);
+			LOGGER.info("Archive {} deployed successfully", deploymentArchive.getName());
+		} catch (DeploymentException | ContentException ex) {
+			LOGGER.error("Failed to deploy archive", ex);
+			status.setCurrentStatus(DeploymentStatus.FAILED);
+			status.setDetails(ex.getMessage());
+			deploymentStatusRepo.save(status);
+		}
+
 	}
 
-    }
+	public void init(Application app) {
+		LOGGER.debug("Initializing deployment task with app id {}", app.getId());
+		status = deploymentStatusRepo.save(new AppDeploymentStatus(deploymentArchive.getName(), app));
+		LOGGER.info("Initialized deployment task {}", deploymentArchive.getName());
+	}
+
+	private Document createXmlDocument(File configFile) throws DeploymentException {
+		try {
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			DocumentBuilder builder = dbf.newDocumentBuilder();
+			Document doc = builder.parse(configFile);
+			return doc;
+		} catch (SAXException | ParserConfigurationException | IOException ex) {
+			throw new DeploymentException(ex);
+		}
+	}
+
+	private void iterateXmlNodes(Document doc, String tagName) throws DeploymentException, ContentException {
+		NodeList tagNodes = doc.getElementsByTagName(tagName);
+		for (int i = 0; i < tagNodes.getLength(); i++) {
+			Node node = tagNodes.item(i);
+			if (node.getNodeType() == Node.ELEMENT_NODE) {
+				Element element = (Element) node;
+				String hash = element.getAttribute("hash");
+				if (hash == null || hash.isEmpty() || hash.isBlank()) {
+					LOGGER.error("Invalid hash found");
+					throw new DeploymentException("Hash can not be empty");
+				}
+				uploadFile(hash);
+			}
+		}
+	}
+
+	private void uploadFile(String hash) throws ContentException {
+		try {
+			LOGGER.debug("Creating content for hash {}", hash);
+			Path startPath = Path.of(deploymentArchive.getAbsolutePath(), "content");
+			Path path = HashUtil.createLocalHashPath(startPath, hash);
+			LOGGER.debug("Copying content from {}", path.toString());
+			InputStream in = new BufferedInputStream(new FileInputStream(path.toFile()));
+			storageService.createContent(in, hash);
+			in.close();
+		} catch (IOException ex) {
+			LOGGER.error("Failed to create content", ex);
+			throw new ContentException(ex);
+		}
+
+	}
 
 }
