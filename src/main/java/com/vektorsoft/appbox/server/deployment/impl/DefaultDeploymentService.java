@@ -12,37 +12,11 @@ import com.vektorsoft.appbox.server.apps.Application;
 import com.vektorsoft.appbox.server.apps.ApplicationRepository;
 import com.vektorsoft.appbox.server.content.ContentLocator;
 import com.vektorsoft.appbox.server.deployment.AppDeploymentStatusRepository;
+import com.vektorsoft.appbox.server.deployment.DeploymentService;
 import com.vektorsoft.appbox.server.deployment.entity.AppDeploymentStatus;
 import com.vektorsoft.appbox.server.exception.ContentException;
 import com.vektorsoft.appbox.server.exception.DeploymentException;
-import com.vektorsoft.appbox.server.deployment.DeploymentService;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.function.Function;
-import javax.annotation.PostConstruct;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-
+import com.vektorsoft.appbox.server.util.XMLUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +27,24 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import javax.annotation.PostConstruct;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+import java.io.*;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.function.Function;
 
 /**
  * @author Vladimir Djurovic <vdjurovic@vektorsoft.com>
@@ -137,7 +129,7 @@ public class DefaultDeploymentService implements DeploymentService {
 			}
 			doc.normalize();
 			// remove empty nodes from document
-			removeEmptyNodes(doc);
+			XMLUtils.removeEmptyNodes(doc);
 		} catch (ContentException ex) {
 			throw new DeploymentException(ex);
 		}
@@ -166,13 +158,9 @@ public class DefaultDeploymentService implements DeploymentService {
 
 	private String outputResultXml(Document doc) throws DeploymentException {
 		try {
-			TransformerFactory factory = TransformerFactory.newInstance();
-			Transformer transformer = factory.newTransformer();
-			transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 
 			StringWriter writer = new StringWriter();
-			transformer.transform(new DOMSource(doc), new StreamResult(writer));
+			XMLUtils.outputResultXml(doc, new StreamResult(writer));
 			return writer.getBuffer().toString();
 
 		} catch (TransformerException ex) {
@@ -181,21 +169,5 @@ public class DefaultDeploymentService implements DeploymentService {
 
 	}
 
-	private void removeEmptyNodes(Document doc) {
-		try {
-			XPathFactory xpathFactory = XPathFactory.newInstance();
-			XPathExpression xpathExp = xpathFactory.newXPath().compile("//text()[normalize-space(.) = '']");
-			NodeList emptyTextNodes = (NodeList) xpathExp.evaluate(doc, XPathConstants.NODESET);
-
-			// Remove each empty text node from document.
-			for (int i = 0; i < emptyTextNodes.getLength(); i++) {
-				Node emptyTextNode = emptyTextNodes.item(i);
-				emptyTextNode.getParentNode().removeChild(emptyTextNode);
-			}
-		} catch (XPathExpressionException ex) {
-			LOGGER.error("Failed to remove empty nodes", ex);
-		}
-
-	}
 
 }

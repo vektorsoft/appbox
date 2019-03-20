@@ -70,6 +70,9 @@ public class DeploymentProcessTask implements Runnable {
 		File configFile = new File(deploymentArchive, AppBoxConstants.DEPLOYMENT_CONFIG_FILE_NAME);
 		if (!configFile.exists()) {
 			LOGGER.error("Configuration files does not exist");
+			status.setCurrentStatus(DeploymentStatus.FAILED);
+			status.setDetails("Deployment configuration not found");
+			deploymentStatusRepo.save(status);
 			return;
 		}
 		try {
@@ -77,6 +80,9 @@ public class DeploymentProcessTask implements Runnable {
 			iterateXmlNodes(configDoc, "icon");
 			iterateXmlNodes(configDoc, "dependency");
 
+			// create app launch configuration files
+			AppConfigFileCreator creator = new AppConfigFileCreator(configDoc);
+			creator.createAppConfigFile();
 			status.setCurrentStatus(DeploymentStatus.SUCCESS);
 			deploymentStatusRepo.save(status);
 			LOGGER.info("Archive {} deployed successfully", deploymentArchive.getName());
