@@ -81,7 +81,7 @@ public class DeploymentProcessTask implements Runnable {
 			iterateXmlNodes(configDoc, "dependency");
 
 			// create app launch configuration files
-			AppConfigFileCreator creator = new AppConfigFileCreator(configDoc);
+			AppConfigFileCreator creator = new AppConfigFileCreator(configDoc, storageService);
 			creator.createAppConfigFile();
 			status.setCurrentStatus(DeploymentStatus.SUCCESS);
 			deploymentStatusRepo.save(status);

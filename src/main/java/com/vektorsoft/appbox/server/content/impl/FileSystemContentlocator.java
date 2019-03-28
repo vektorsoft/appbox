@@ -52,7 +52,6 @@ public class FileSystemContentlocator implements ContentLocator {
 
 	@Override
 	public URI getContentLocation(String hash) throws ContentException {
-
 		Path contentPath = HashUtil.createLocalHashPath(Path.of(contentStorageMapping.getContentStorageLocation()), hash);
 		LOGGER.debug("Binary file path: {}", contentPath);
 		return contentPath.toUri();

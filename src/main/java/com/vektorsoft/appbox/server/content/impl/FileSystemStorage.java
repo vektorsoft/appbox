@@ -114,6 +114,25 @@ public class FileSystemStorage implements ContentStorage {
 		}
 	}
 
+	@Override
+	public void createApplicationConfigFile(InputStream in, String applicationId, OS os, CpuArch arch) throws ContentException {
+		URI appStorageUri = contentMapping.getAppStorageLocation(applicationId);
+		StringBuilder sb = new StringBuilder("application_");
+		sb.append(os.toString().toLowerCase());
+		if(os == OS.LINUX || os == OS.WINDOWS) {
+			sb.append("_").append(arch.toString().toLowerCase());
+		}
+		sb.append(".xml");
+		File appDir = new File(appStorageUri);
+		File appConfigFile = new File(appDir, sb.toString());
+		try {
+			Files.copy(in, appConfigFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+		} catch(IOException ex) {
+			throw  new ContentException(ex);
+		}
+
+	}
+
 	private InputStream uriToInputStream(URI uri) throws ContentException {
 		try {
 			return new FileInputStream(new File(uri));

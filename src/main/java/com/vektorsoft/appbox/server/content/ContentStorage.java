@@ -26,7 +26,15 @@ public interface ContentStorage {
     InputStream getAppLauncher(String applicationId, OS os, CpuArch arch) throws ContentException;
     
     InputStream getBinaryData(String hash) throws ContentException;
-    
+
+    /**
+     * Store content from input file into backend storage. Content hash must match provided hash. If hashes do not match,
+     * an exception will be thrown.
+     *
+     * @param in content input stream
+     * @param expectedHash expected content hash
+     * @throws ContentException if an error occurs
+     */
     void createContent(InputStream in, String expectedHash) throws ContentException;
 
     /**
@@ -37,4 +45,15 @@ public interface ContentStorage {
      * @throws ContentException if an error occurs
      */
     String createContent(InputStream in) throws ContentException;
+
+    /**
+     * Create runtime configuration file for application with given ID. File name will be generated based on OS and CPU architecture.
+     *
+     * @param in content input stream
+     * @param applicationId application ID
+     * @param os target operating system
+     * @param arch target CPU architecture
+     * @throws ContentException
+     */
+    void createApplicationConfigFile(InputStream in, String applicationId, OS os, CpuArch arch) throws ContentException;
 }
