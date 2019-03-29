@@ -124,6 +124,12 @@ public class FileSystemStorage implements ContentStorage {
 		}
 		sb.append(".xml");
 		File appDir = new File(appStorageUri);
+		if(!appDir.exists()) {
+			var success = appDir.mkdirs();
+			if(!success) {
+				throw new ContentException("Failed to create application directory");
+			}
+		}
 		File appConfigFile = new File(appDir, sb.toString());
 		try {
 			Files.copy(in, appConfigFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -135,7 +141,9 @@ public class FileSystemStorage implements ContentStorage {
 
 	private InputStream uriToInputStream(URI uri) throws ContentException {
 		try {
-			return new FileInputStream(new File(uri));
+			File file = new File(uri);
+			System.out.println("File absolute path: " + file.getAbsolutePath());
+			return new FileInputStream(file.getAbsolutePath());
 		} catch (FileNotFoundException ex) {
 			throw new ContentException(ex);
 		}

@@ -13,6 +13,8 @@
  */
 package com.vektorsoft.appbox.server.content;
 
+import com.vektorsoft.appbox.server.model.CpuArch;
+import com.vektorsoft.appbox.server.model.OS;
 import com.vektorsoft.appbox.server.test.TestConfig;
 import com.vektorsoft.appbox.server.test.TestUtil;
 
@@ -38,17 +40,26 @@ import org.springframework.beans.factory.annotation.Qualifier;
 @ContextConfiguration(classes = {TestConfig.class})
 public class FileSystemStorageTest {
 
-	private final String testString = "This is test string";
-	private final String testString1 = "Another test string";
-
 	@Autowired
 	@Qualifier("fileSystemStorage")
 	private ContentStorage storageService;
+
+	@Autowired
+	private ContentLocator contentLocator;
 
 	@BeforeClass
 	public static void setupContent() throws Exception {
 		TestUtil.createTestContent();
 
+	}
+
+	@Test
+	public void createAppConfig() throws Exception {
+		var in = getClass().getResourceAsStream("/deployer-config.xml");
+		storageService.createApplicationConfigFile(in, "appId", OS.LINUX, CpuArch.X86);
+		// verify that files exist
+		var uri = contentLocator.getApplicationConfigLocation("appId", OS.LINUX, CpuArch.X86);
+		assertNotNull(uri);
 	}
 
 

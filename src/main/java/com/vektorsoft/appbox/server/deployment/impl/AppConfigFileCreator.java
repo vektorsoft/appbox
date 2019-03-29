@@ -169,7 +169,6 @@ public class AppConfigFileCreator {
 			XMLUtils.removeEmptyNodes(currentDoc);
 			StringWriter writer = new StringWriter();
 			XMLUtils.outputResultXml(currentDoc, new StreamResult(writer));
-			System.out.println(writer.toString());
 			contentStorage.createApplicationConfigFile(new BufferedInputStream(new ByteArrayInputStream(writer.toString().getBytes())), applicationId, os, arch);
 			if(os == OS.MAC) {
 				// for Mac, we only need one CPU architecture

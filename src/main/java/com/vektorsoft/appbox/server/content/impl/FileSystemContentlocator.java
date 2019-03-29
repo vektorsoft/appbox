@@ -53,6 +53,9 @@ public class FileSystemContentlocator implements ContentLocator {
 	@Override
 	public URI getContentLocation(String hash) throws ContentException {
 		Path contentPath = HashUtil.createLocalHashPath(Path.of(contentStorageMapping.getContentStorageLocation()), hash);
+		if(Files.notExists(contentPath)) {
+			throw new ContentException("Could not find conent for hash " + hash);
+		}
 		LOGGER.debug("Binary file path: {}", contentPath);
 		return contentPath.toUri();
 	}
@@ -69,6 +72,10 @@ public class FileSystemContentlocator implements ContentLocator {
 	@Override
 	public URI getAppLauncherLocation(String applicationId, OS os, CpuArch arch) throws ContentException {
 		String fileName = String.format(AppBoxConstants.LAUNCHER_FILE_NAME_TEMPLATE, os.toString().toLowerCase(), arch.toString().toLowerCase());
+		// for Mac OS X, we want to remove CPU architecture part
+		if(os == OS.MAC) {
+			fileName = fileName.substring(0, fileName.lastIndexOf("_"));
+		}
 		LOGGER.debug("Launcher file name: {}", fileName);
 		Path launcherFilePath = Path.of(Path.of(contentStorageMapping.getLauncherStorageLocation()).toString(), fileName);
 
