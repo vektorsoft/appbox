@@ -119,6 +119,7 @@ public class DefaultDeploymentService implements DeploymentService {
 		try {
 			iterateXmlNodes(doc, "icon", nodesToRemove);
 			iterateXmlNodes(doc, "dependency", nodesToRemove);
+			iterateXmlNodes(doc, "splash-screen", nodesToRemove);
 			// remove nodes which exist
 			for (Node n : nodesToRemove) {
 				n.getParentNode().removeChild(n);

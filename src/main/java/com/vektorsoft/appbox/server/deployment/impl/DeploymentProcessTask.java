@@ -68,17 +68,14 @@ public class DeploymentProcessTask implements Runnable {
 		LOGGER.debug("Setting deployment task status to {}", DeploymentStatus.IN_PROGRESS);
 		ZipUtil.explode(deploymentArchive);
 		File configFile = new File(deploymentArchive, AppBoxConstants.DEPLOYMENT_CONFIG_FILE_NAME);
-		if (!configFile.exists()) {
-			LOGGER.error("Configuration files does not exist");
-			status.setCurrentStatus(DeploymentStatus.FAILED);
-			status.setDetails("Deployment configuration not found");
-			deploymentStatusRepo.save(status);
+		File diffFile = new File(deploymentArchive, AppBoxConstants.DEPLOYMENT_DIFF_FILE_NAME);
+		if (!checkRequiredFile(configFile) || !checkRequiredFile(diffFile)) {
 			return;
 		}
 		try {
 			Document configDoc = createXmlDocument(configFile);
-			iterateXmlNodes(configDoc, "icon");
-			iterateXmlNodes(configDoc, "dependency");
+			Document diffDoc = createXmlDocument(diffFile);
+			processDeploymentDiff(diffDoc);
 
 			// create app launch configuration files
 			AppConfigFileCreator creator = new AppConfigFileCreator(configDoc, storageService);
@@ -93,6 +90,18 @@ public class DeploymentProcessTask implements Runnable {
 			deploymentStatusRepo.save(status);
 		}
 
+	}
+
+	private boolean checkRequiredFile(File file) {
+		boolean exists = true;
+		if(!file.exists()) {
+			exists = false;
+			LOGGER.error("File {} does not exist", file.getName());
+			status.setCurrentStatus(DeploymentStatus.FAILED);
+			status.setDetails("Required file " + file.getName() +  "not found");
+			deploymentStatusRepo.save(status);
+		}
+		return exists;
 	}
 
 	public void init(Application app) {
@@ -142,6 +151,12 @@ public class DeploymentProcessTask implements Runnable {
 			throw new ContentException(ex);
 		}
 
+	}
+
+	private void processDeploymentDiff(Document diffDoc) throws DeploymentException, ContentException {
+		iterateXmlNodes(diffDoc, "icon");
+		iterateXmlNodes(diffDoc, "dependency");
+		iterateXmlNodes(diffDoc, "splash-screen");
 	}
 
 }

@@ -84,6 +84,6 @@ public class FileSystemContentLocatorTest {
 	public void testLauncherLocation() throws Exception {
 		URI uri = contentLocator.getAppLauncherLocation("appid", OS.MAC, CpuArch.X86);
 		assertEquals("file", uri.getScheme());
-		assertTrue(uri.toString().endsWith("launcher_mac_x86"));
+		assertTrue(uri.toString().endsWith("launcher_mac"));
 	}
 }

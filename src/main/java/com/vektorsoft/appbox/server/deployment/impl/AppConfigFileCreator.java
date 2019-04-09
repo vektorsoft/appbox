@@ -19,10 +19,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.codec.digest.MessageDigestAlgorithms;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -106,11 +103,46 @@ public class AppConfigFileCreator {
 		var dependenciesElement = (Element)xPath.compile("//application/jvm/dependencies").evaluate(deploymentConfigFile, XPathConstants.NODE);
 		var importedDepsElement = doc.importNode(dependenciesElement, true);
 		importedJvm.appendChild(importedDepsElement);
-		// import server element
-		var serverElement = (Element)xPath.compile("//application/server").evaluate(deploymentConfigFile, XPathConstants.NODE);
-		var importedServer = doc.importNode(serverElement, true);
-		appElement.appendChild(importedServer);
 
+		// import main class
+		var importedMainClass = importElement (doc, xPath, "//application/jvm/main-class", true);
+		if(importedMainClass != null) {
+			importedJvm.appendChild(importedMainClass);
+		}
+
+		// import JVM options
+		var importedJvmOptions = importElement (doc, xPath, "//application/jvm/jvm-options", true);
+		if(importedJvmOptions != null) {
+			importedJvm.appendChild(importedJvmOptions);
+		}
+
+		// import system properties
+		var importedSysProps = importElement(doc, xPath, "//application/jvm/system-properties", true);
+		if(importedSysProps != null) {
+			importedJvm.appendChild(importedSysProps);
+		}
+
+		// import splash screen
+		var importedSplashScreen = importElement(doc, xPath, "//application/jvm/splash-screen", false);
+		if(importedSplashScreen != null) {
+			importedJvm.appendChild(importedSplashScreen);
+		}
+
+		// import server element
+		var importedServer = importElement(doc, xPath, "//application/server", false);
+		if(importedServer != null) {
+			appElement.appendChild(importedServer);
+		}
+
+	}
+
+	private Node importElement(Document importDoc, XPath xPath, String xpathExpression, boolean deepImport) throws XPathException {
+		var element = (Element)xPath.compile(xpathExpression).evaluate(deploymentConfigFile, XPathConstants.NODE);
+		Node importedElement = null;
+		if(element != null) {
+			importedElement = importDoc.importNode(element, deepImport);
+		}
+		return importedElement;
 	}
 
 	private String platformDependenciesXpathExpression(OS os) {
@@ -202,7 +234,7 @@ public class AppConfigFileCreator {
 			if(os == OS.WINDOWS) {
 				fileName = fileName + ".exe";
 			}
-			launcherElement.setAttribute("fileName", fileName);
+			launcherElement.setAttribute("file-name", fileName);
 		} catch(IOException ex) {
 			LOGGER.error("Failed to process  launcher data for application ID {}, OS {} and CPU architecture {}", applicationId, os, arch);
 			throw new ContentException(ex);

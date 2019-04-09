@@ -19,6 +19,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.codec.digest.MessageDigestAlgorithms;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -45,6 +46,12 @@ public final class TestUtil {
 		if(!launchersDir.exists()) {
 			launchersDir.mkdirs();
 		}
+		// create mock launcher file
+		File mockLauncher = new File(launchersDir, "launcher_mac");
+		FileOutputStream fout = new FileOutputStream(mockLauncher);
+		fout.write(1);
+		fout.close();
+
 		String hash = DIGEST.digestAsHex(new File(FileSystemContentLocatorTest.class.getResource("/content/mock_content").toURI()));
 		String[] parts = new String[]{
 				hash.substring(0, 2),
@@ -57,6 +64,7 @@ public final class TestUtil {
 		if(!contentPath.toFile().exists()) {
 			Files.copy(FileSystemContentLocatorTest.class.getResourceAsStream("/content/mock_content"), contentPath, StandardCopyOption.REPLACE_EXISTING);
 		}
+
 
 	}
 

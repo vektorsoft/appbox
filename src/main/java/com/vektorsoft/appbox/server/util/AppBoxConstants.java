@@ -52,6 +52,11 @@ public final class AppBoxConstants {
      */
     public static final String DEPLOYMENT_CONFIG_FILE_NAME = "deployer-config.xml";
 
+    /**
+     * File name of deployment diff file.
+     */
+    public static final String DEPLOYMENT_DIFF_FILE_NAME = "diff.xml";
+
     private AppBoxConstants() {
 	
     }
