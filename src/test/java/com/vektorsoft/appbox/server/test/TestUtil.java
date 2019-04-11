@@ -15,6 +15,9 @@
 package com.vektorsoft.appbox.server.test;
 
 import com.vektorsoft.appbox.server.content.FileSystemContentLocatorTest;
+import com.vektorsoft.appbox.server.model.CpuArch;
+import com.vektorsoft.appbox.server.model.OS;
+import com.vektorsoft.appbox.server.util.AppBoxConstants;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.codec.digest.MessageDigestAlgorithms;
 
@@ -46,11 +49,17 @@ public final class TestUtil {
 		if(!launchersDir.exists()) {
 			launchersDir.mkdirs();
 		}
-		// create mock launcher file
-		File mockLauncher = new File(launchersDir, "launcher_mac");
-		FileOutputStream fout = new FileOutputStream(mockLauncher);
-		fout.write(1);
-		fout.close();
+		// create mock launcher files
+		for(var os : OS.values()) {
+			for(var cpu : CpuArch.values()) {
+				var fileName = String.format(AppBoxConstants.LAUNCHER_FILE_NAME_TEMPLATE, os.toString().toLowerCase(), cpu.toString().toLowerCase());
+				File mockLauncher = new File(launchersDir, fileName);
+				FileOutputStream fout = new FileOutputStream(mockLauncher);
+				fout.write(1);
+				fout.close();
+			}
+		}
+
 
 		String hash = DIGEST.digestAsHex(new File(FileSystemContentLocatorTest.class.getResource("/content/mock_content").toURI()));
 		String[] parts = new String[]{

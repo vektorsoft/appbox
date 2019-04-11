@@ -7,11 +7,9 @@
  */
 
 
-package com.vektorsoft.appbox.server.controller;
+package com.vektorsoft.appbox.server.deployment;
 
-import com.vektorsoft.appbox.server.deployment.DeploymentStatusDTO;
 import com.vektorsoft.appbox.server.exception.DeploymentException;
-import com.vektorsoft.appbox.server.deployment.DeploymentService;
 import com.vektorsoft.appbox.server.util.AppBoxConstants;
 
 import java.io.IOException;

@@ -26,7 +26,7 @@ public final class AppBoxConstants {
      * @see CpuArch
      * @see OS
      */
-    public static final String CONFIG_FILE_NAME_TEMPLATE = "config_%s_%s.xml";
+    public static final String CONFIG_FILE_NAME_TEMPLATE = "application_%s_%s.xml";
     
     /**
      * Template for launcher file name. Parameters are OS and CPU architecture. Valid launcher 

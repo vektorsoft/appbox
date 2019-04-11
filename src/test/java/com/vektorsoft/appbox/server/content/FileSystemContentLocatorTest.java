@@ -18,23 +18,20 @@ import com.vektorsoft.appbox.server.exception.ContentException;
 import com.vektorsoft.appbox.server.model.CpuArch;
 import com.vektorsoft.appbox.server.model.OS;
 import com.vektorsoft.appbox.server.test.TestConfig;
-
-import java.net.URI;
-
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import static org.junit.Assert.*;
-
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 
-import static com.vektorsoft.appbox.server.test.TestUtil.*;
+import java.net.URI;
+
+import static com.vektorsoft.appbox.server.test.TestUtil.MOCK_HASH;
+import static com.vektorsoft.appbox.server.test.TestUtil.createTestContent;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Vladimir Djurovic <vdjurovic@vektorsoft.com>
@@ -77,13 +74,7 @@ public class FileSystemContentLocatorTest {
 	public void testAppConfigLocation() throws Exception {
 		URI uri = contentLocator.getApplicationConfigLocation("appid", OS.LINUX, CpuArch.X64);
 		assertEquals("file", uri.getScheme());
-		assertTrue(uri.toString().endsWith("config_linux_x64.xml"));
+		assertTrue(uri.toString().endsWith("application_linux_x64.xml"));
 	}
 
-	@Test
-	public void testLauncherLocation() throws Exception {
-		URI uri = contentLocator.getAppLauncherLocation("appid", OS.MAC, CpuArch.X86);
-		assertEquals("file", uri.getScheme());
-		assertTrue(uri.toString().endsWith("launcher_mac"));
-	}
 }

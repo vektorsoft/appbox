@@ -30,6 +30,8 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 /**
+ * Implementation of {@link ContentStorage} which uses local file system to store data.
+ *
  * @author Vladimir Djurovic <vdjurovic@vektorsoft.com>
  */
 @Component("fileSystemStorage")
@@ -48,12 +50,6 @@ public class FileSystemStorage implements ContentStorage {
 	@Override
 	public InputStream getAppRunConfigFile(String applicationId, OS os, CpuArch arch) throws ContentException {
 		URI uri = contentLocator.getApplicationConfigLocation(applicationId, os, arch);
-		return uriToInputStream(uri);
-	}
-
-	@Override
-	public InputStream getAppLauncher(String applicationId, OS os, CpuArch arch) throws ContentException {
-		URI uri = contentLocator.getAppLauncherLocation(applicationId, os, arch);
 		return uriToInputStream(uri);
 	}
 

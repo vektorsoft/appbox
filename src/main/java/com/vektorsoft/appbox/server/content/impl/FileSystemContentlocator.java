@@ -63,23 +63,14 @@ public class FileSystemContentlocator implements ContentLocator {
 	@Override
 	public URI getApplicationConfigLocation(String applicationId, OS os, CpuArch arch) throws ContentException {
 		String fileName = String.format(AppBoxConstants.CONFIG_FILE_NAME_TEMPLATE, os.toString().toLowerCase(), arch.toString().toLowerCase());
+		if(os == OS.MAC) {
+			// for Mac, we don't want arch extension
+			fileName = fileName.substring(0, fileName.lastIndexOf("_")) + ".xml";
+		}
 		LOGGER.debug("Config file name: {}", fileName);
 		Path configFilePath = Path.of(Path.of(contentStorageMapping.getAppStorageLocation(applicationId)).toString(), fileName);
 		LOGGER.debug("Config file path: {}", configFilePath.toString());
 		return configFilePath.toUri();
-	}
-
-	@Override
-	public URI getAppLauncherLocation(String applicationId, OS os, CpuArch arch) throws ContentException {
-		String fileName = String.format(AppBoxConstants.LAUNCHER_FILE_NAME_TEMPLATE, os.toString().toLowerCase(), arch.toString().toLowerCase());
-		// for Mac OS X, we want to remove CPU architecture part
-		if(os == OS.MAC) {
-			fileName = fileName.substring(0, fileName.lastIndexOf("_"));
-		}
-		LOGGER.debug("Launcher file name: {}", fileName);
-		Path launcherFilePath = Path.of(Path.of(contentStorageMapping.getLauncherStorageLocation()).toString(), fileName);
-
-		return launcherFilePath.toUri();
 	}
 
 }

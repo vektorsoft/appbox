@@ -6,24 +6,17 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-package com.vektorsoft.appbox.server.controller;
+package com.vektorsoft.appbox.server.content;
 
+import com.vektorsoft.appbox.server.content.ContentStorage;
 import com.vektorsoft.appbox.server.exception.ContentException;
 import com.vektorsoft.appbox.server.model.CpuArch;
 import com.vektorsoft.appbox.server.model.OS;
-import com.vektorsoft.appbox.server.content.ContentStorage;
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.*;
 
 /**
  *
@@ -51,22 +44,6 @@ public class ContentController {
 	return sb.toString().trim();
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/launcher/{os}/{arch}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public @ResponseBody
-    byte[] getApplicationLauncher(@PathVariable("appId") String applicationId, @PathVariable("os") String os, @PathVariable("arch") String arch) throws IOException, ContentException {
-	InputStream in = storageService.getAppLauncher(applicationId, OS.valueOf(os.toUpperCase()), CpuArch.valueOf(arch.toUpperCase()));
-	ByteArrayOutputStream out = new ByteArrayOutputStream();
-	int read = 0;
-	byte[] buffer = new byte[1024];
-	while (read != -1) {
-	    read = in.read(buffer);
-	    if (read != -1) {
-		out.write(buffer, 0, read);
-	    }
-	}
-	out.close();
-	return out.toByteArray();
-    }
     
     @RequestMapping(method = RequestMethod.GET, value = "/apps/content/{hash}")
     public @ResponseBody byte[] getBinaryData(@PathVariable("hash") String hash) throws ContentException, IOException {

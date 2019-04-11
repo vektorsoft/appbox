@@ -9,6 +9,8 @@
 package com.vektorsoft.appbox.server.deployment;
 
 import com.vektorsoft.appbox.server.content.ContentStorage;
+import com.vektorsoft.appbox.server.content.JvmLauncher;
+import com.vektorsoft.appbox.server.content.JvmLauncherRepository;
 import com.vektorsoft.appbox.server.deployment.impl.AppConfigFileCreator;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,6 +32,7 @@ public class AppConfigFileCreatorTest {
 
 	private AppConfigFileCreator creator;
 	private ContentStorage contentStorage;
+	private JvmLauncherRepository launcherRepository;
 
 	@Before
 	public void setup() throws Exception {
@@ -39,14 +42,17 @@ public class AppConfigFileCreatorTest {
 		Document doc = builder.parse(in);
 
 		contentStorage = Mockito.mock(ContentStorage.class);
+		launcherRepository = Mockito.mock(JvmLauncherRepository.class);
 
-		creator = new AppConfigFileCreator(doc, contentStorage);
+
+		creator = new AppConfigFileCreator(doc, contentStorage, launcherRepository);
 	}
 
 	@Test
 	public void createConfigFile() throws Exception {
-		when(contentStorage.getAppLauncher(anyString(), any(), any())).thenReturn(getClass().getResourceAsStream("/content/mock_content"));
-
+		JvmLauncher launcher = new JvmLauncher();
+		launcher.setHash("122323abcd");
+		when(launcherRepository.findFirstByOsAndCpuArchOrderByVersionDesc(any(), any())).thenReturn(launcher);
 		creator.createAppConfigFile();
 	}
 }

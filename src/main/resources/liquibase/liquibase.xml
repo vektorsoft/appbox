@@ -44,4 +44,26 @@
                                  referencedColumnNames="app_id" />
     </changeSet>
 
+    <changeSet id="launcher_hash_db" author="vdjurovic" dbms="postgresql">
+        <createTable tableName="jvm_launcher">
+            <column name="launcher_id" type="varchar">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="os" type="varchar">
+                <constraints nullable="false" />
+            </column>
+            <column name="cpu_arch" type="varchar" />
+            <column name="hash" type="varchar">
+                <constraints nullable="false" />
+            </column>
+            <column name="version" type="integer" />
+        </createTable>
+    </changeSet>
+
+    <changeSet id="add_launcher_size" author="vdjurovic" dbms="postgresql">
+        <addColumn tableName="jvm_launcher">
+            <column name="size" type="bigint"></column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

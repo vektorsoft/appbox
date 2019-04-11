@@ -15,6 +15,7 @@ import com.vektorsoft.appbox.server.model.OS;
 import java.io.InputStream;
 
 /**
+ * Defines methods concerned with getting data into and from storage.
  *
  * @author Vladimir Djurovic <vdjurovic@vektorsoft.com>
  */
@@ -22,8 +23,6 @@ import java.io.InputStream;
 public interface ContentStorage {
 
     InputStream getAppRunConfigFile(String applicationId, OS os, CpuArch arch) throws ContentException;
-    
-    InputStream getAppLauncher(String applicationId, OS os, CpuArch arch) throws ContentException;
     
     InputStream getBinaryData(String hash) throws ContentException;
 

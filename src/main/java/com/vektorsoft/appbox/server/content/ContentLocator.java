@@ -15,16 +15,30 @@ import com.vektorsoft.appbox.server.model.OS;
 import java.net.URI;
 
 /**
+ * Defines methods for obtaining URIs for content location.
  *
  * @author Vladimir Djurovic <vdjurovic@vektorsoft.com>
  */
 public interface ContentLocator {
 
+    /**
+     * Check if content with specified hash exists.
+     *
+     * @param hash content hash
+     * @return {@code true} if content already exists, {@code false otherwise}
+     * @throws ContentException if an error occurs
+     */
     boolean contentExists(String hash) throws ContentException;
-    
+
+    /**
+     * Returns URI of content based on it's hash.
+     *
+     * @param hash content hash
+     * @return content URI
+     * @throws ContentException if an error occurs
+     */
     URI getContentLocation(String hash) throws ContentException;
     
     URI getApplicationConfigLocation(String applicationId, OS os, CpuArch arch) throws ContentException;
-    
-    URI getAppLauncherLocation(String applicationId, OS os, CpuArch arch) throws ContentException;
+
 }

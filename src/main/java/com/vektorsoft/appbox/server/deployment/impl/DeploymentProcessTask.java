@@ -10,11 +10,14 @@ package com.vektorsoft.appbox.server.deployment.impl;
 
 import com.vektorsoft.appbox.server.apps.Application;
 import com.vektorsoft.appbox.server.content.ContentStorage;
+import com.vektorsoft.appbox.server.content.JvmLauncherRepository;
 import com.vektorsoft.appbox.server.deployment.AppDeploymentStatusRepository;
 import com.vektorsoft.appbox.server.deployment.entity.AppDeploymentStatus;
 import com.vektorsoft.appbox.server.deployment.entity.DeploymentStatus;
 import com.vektorsoft.appbox.server.exception.ContentException;
 import com.vektorsoft.appbox.server.exception.DeploymentException;
+import com.vektorsoft.appbox.server.model.CpuArch;
+import com.vektorsoft.appbox.server.model.OS;
 import com.vektorsoft.appbox.server.util.AppBoxConstants;
 
 import java.io.BufferedInputStream;
@@ -55,6 +58,8 @@ public class DeploymentProcessTask implements Runnable {
 	private ContentStorage storageService;
 	@Autowired
 	private AppDeploymentStatusRepository deploymentStatusRepo;
+	@Autowired
+	private JvmLauncherRepository launcherRepository;
 
 	public DeploymentProcessTask(File file) {
 		this.deploymentArchive = file;
@@ -78,7 +83,7 @@ public class DeploymentProcessTask implements Runnable {
 			processDeploymentDiff(diffDoc);
 
 			// create app launch configuration files
-			AppConfigFileCreator creator = new AppConfigFileCreator(configDoc, storageService);
+			AppConfigFileCreator creator = new AppConfigFileCreator(configDoc, storageService, launcherRepository);
 			creator.createAppConfigFile();
 			status.setCurrentStatus(DeploymentStatus.SUCCESS);
 			deploymentStatusRepo.save(status);
