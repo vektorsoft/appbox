@@ -171,6 +171,10 @@ public class AppConfigFileCreator {
 	 */
 	private void createOsConfig(Document doc, XPath xpath, String applicationId, OS os) throws XPathException, TransformerException, ContentException {
 		for (CpuArch arch : CpuArch.values()) {
+			if (os == OS.MAC && arch == CpuArch.X86) {
+				// for Mac, we only want 64-bit config
+				continue;
+			}
 			Document currentDoc = XMLUtils.cloneDocument(doc);
 			// get dependencies node
 			var dependenciesElement = (Element) xpath.compile("//application/jvm/dependencies").evaluate(currentDoc, XPathConstants.NODE);
@@ -202,10 +206,6 @@ public class AppConfigFileCreator {
 			StringWriter writer = new StringWriter();
 			XMLUtils.outputResultXml(currentDoc, new StreamResult(writer));
 			contentStorage.createApplicationConfigFile(new BufferedInputStream(new ByteArrayInputStream(writer.toString().getBytes())), applicationId, os, arch);
-			if (os == OS.MAC) {
-				// for Mac, we only need one CPU architecture
-				break;
-			}
 		}
 	}
 
