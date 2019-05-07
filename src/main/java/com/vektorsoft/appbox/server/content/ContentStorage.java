@@ -26,6 +26,8 @@ public interface ContentStorage {
     
     InputStream getBinaryData(String hash) throws ContentException;
 
+    InputStream getJvmData(String version, OS os, CpuArch arch) throws ContentException;
+
     /**
      * Store content from input file into backend storage. Content hash must match provided hash. If hashes do not match,
      * an exception will be thrown.

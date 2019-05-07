@@ -61,6 +61,12 @@ public class FileSystemStorage implements ContentStorage {
 	}
 
 	@Override
+	public InputStream getJvmData(String version, OS os, CpuArch arch) throws ContentException {
+		URI uri = contentLocator.getJvmLocation(version, os, arch);
+		return uriToInputStream(uri);
+	}
+
+	@Override
 	public void createContent(InputStream in, String expectedHash) throws ContentException {
 		if (contentLocator.contentExists(expectedHash)) {
 			LOGGER.error("Content with hash {} already exists", expectedHash);
@@ -138,7 +144,6 @@ public class FileSystemStorage implements ContentStorage {
 	private InputStream uriToInputStream(URI uri) throws ContentException {
 		try {
 			File file = new File(uri);
-			System.out.println("File absolute path: " + file.getAbsolutePath());
 			return new FileInputStream(file.getAbsolutePath());
 		} catch (FileNotFoundException ex) {
 			throw new ContentException(ex);

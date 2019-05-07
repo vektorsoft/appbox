@@ -8,6 +8,7 @@
 
 package com.vektorsoft.appbox.server.content;
 
+import com.vektorsoft.appbox.server.content.entity.JvmLauncher;
 import com.vektorsoft.appbox.server.model.CpuArch;
 import com.vektorsoft.appbox.server.model.OS;
 import com.vektorsoft.appbox.server.util.AppBoxConstants;

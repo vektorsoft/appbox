@@ -8,6 +8,8 @@
 
 package com.vektorsoft.appbox.server.content;
 
+import com.vektorsoft.appbox.server.model.CpuArch;
+import com.vektorsoft.appbox.server.model.OS;
 import com.vektorsoft.appbox.server.test.TestConfig;
 import org.junit.Before;
 import org.junit.Test;
@@ -69,5 +71,13 @@ public class FileSystemMappingTest {
 		Path path = Path.of(uri);
 		assertTrue(path.startsWith(currentDir));
 		assertTrue(path.endsWith(Path.of(currentDir.toString(), "target", "content", "apps", "appid")));
+	}
+
+	@Test
+	public void jvmStorageLocationTest() {
+		URI uri = storageMapping.getJvmStorageLocation("11", OS.LINUX, CpuArch.X86);
+		Path path = Path.of(uri);
+		assertTrue(path.startsWith(currentDir));
+		assertTrue(path.endsWith(Path.of(currentDir.toString(), "target", "content", "jvm", "11", "linux", "x86")));
 	}
 }

@@ -6,7 +6,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-package com.vektorsoft.appbox.server.content;
+package com.vektorsoft.appbox.server.content.entity;
 
 import com.vektorsoft.appbox.server.model.CpuArch;
 import com.vektorsoft.appbox.server.model.OS;
@@ -16,7 +16,8 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 
 /**
- * Entity for JVM launcher binary.
+ * Entity for JVM native launcher binary.
+ *
  * @author Vladimir Djurovic
  */
 @Entity

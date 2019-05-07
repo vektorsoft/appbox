@@ -9,6 +9,8 @@
 package com.vektorsoft.appbox.server.content.impl;
 
 import com.vektorsoft.appbox.server.content.ContentStorageMapping;
+import com.vektorsoft.appbox.server.model.CpuArch;
+import com.vektorsoft.appbox.server.model.OS;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -26,12 +28,14 @@ public class FileSystemStorageMapping implements ContentStorageMapping {
 	private final File contentStorageDir;
 	private final File launchersDir;
 	private final File applicationsDir;
+	private final File jvmDir;
 
 	public FileSystemStorageMapping(@Value("${content.storage.root}") String storageRootPath) {
 		storageRootDir = new File(storageRootPath);
 		contentStorageDir = new File(storageRootDir, "content");
 		launchersDir = new File(storageRootDir, "launchers");
 		applicationsDir = new File(storageRootDir, "apps");
+		jvmDir = new File(storageRootDir, "jvm");
 	}
 
 
@@ -53,5 +57,10 @@ public class FileSystemStorageMapping implements ContentStorageMapping {
 	@Override
 	public URI getAppStorageLocation(String applicationId) {
 		return Path.of(applicationsDir.getAbsolutePath(), applicationId).toUri();
+	}
+
+	@Override
+	public URI getJvmStorageLocation(String version, OS os, CpuArch cpuArch) {
+		return Path.of(jvmDir.getAbsolutePath(), version, os.toString().toLowerCase(), cpuArch.toString().toLowerCase()).toUri();
 	}
 }

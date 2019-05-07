@@ -19,45 +19,65 @@ import org.springframework.web.bind.annotation.*;
 import java.io.*;
 
 /**
- *
  * @author Vladimir Djurovic <vdjurovic@vektorsoft.com>
  */
 @RestController("contentController")
 public class ContentController {
 
-    @Autowired
-    private ContentStorage storageService;
+	@Autowired
+	private ContentStorage storageService;
 
-    @RequestMapping(method = RequestMethod.GET, value = "/apps/{appId}/content/config/{os}/{arch}", produces = {MediaType.APPLICATION_XML_VALUE})
-    public @ResponseBody
-    String getApplicationRuntimeConfig(@PathVariable("appId") String applicationId, @PathVariable("os") String os, @PathVariable("arch") String arch) throws ContentException, IOException {
+	@RequestMapping(method = RequestMethod.GET, value = "/apps/{appId}/content/config/{os}/{arch}", produces = {MediaType.APPLICATION_XML_VALUE})
+	public @ResponseBody
+	String getApplicationRuntimeConfig(@PathVariable("appId") String applicationId, @PathVariable("os") String os, @PathVariable("arch") String arch) throws ContentException, IOException {
 
-	InputStream in = storageService.getAppRunConfigFile(applicationId, OS.valueOf(os.toUpperCase()), CpuArch.valueOf(arch.toUpperCase()));
-	StringBuilder sb;
-	try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
-	    sb = new StringBuilder();
-	    String line;
-	    while ((line = reader.readLine()) != null) {
-		sb.append(line).append("\n");
-	    }
+		InputStream in = storageService.getAppRunConfigFile(applicationId, OS.valueOf(os.toUpperCase()), CpuArch.valueOf(arch.toUpperCase()));
+		StringBuilder sb;
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+			sb = new StringBuilder();
+			String line;
+			while ((line = reader.readLine()) != null) {
+				sb.append(line).append("\n");
+			}
+		}
+		return sb.toString().trim();
 	}
-	return sb.toString().trim();
-    }
 
-    
-    @RequestMapping(method = RequestMethod.GET, value = "/apps/content/{hash}")
-    public @ResponseBody byte[] getBinaryData(@PathVariable("hash") String hash) throws ContentException, IOException {
-	InputStream in = storageService.getBinaryData(hash);
-	ByteArrayOutputStream out = new ByteArrayOutputStream();
-	int read = 0;
-	byte[] buffer = new byte[1024];
-	while (read != -1) {
-	    read = in.read(buffer);
-	    if (read != -1) {
-		out.write(buffer, 0, read);
-	    }
+
+	@RequestMapping(method = RequestMethod.GET, value = "/apps/content/{hash}")
+	public @ResponseBody
+	byte[] getBinaryData(@PathVariable("hash") String hash) throws ContentException, IOException {
+		InputStream in = storageService.getBinaryData(hash);
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		int read = 0;
+		byte[] buffer = new byte[1024];
+		while (read != -1) {
+			read = in.read(buffer);
+			if (read != -1) {
+				out.write(buffer, 0, read);
+			}
+		}
+		out.close();
+		return out.toByteArray();
 	}
-	out.close();
-	return out.toByteArray();
-    }
+
+	@RequestMapping(method = RequestMethod.GET, value = "/jvm/{version}/{os}/{arch}")
+	public @ResponseBody
+	byte[] downloadJvm(@PathVariable("version") String version,
+					   @PathVariable("os") String os,
+					   @PathVariable("arch") String arch) throws ContentException, IOException {
+		InputStream in = storageService.getJvmData(version, OS.valueOf(os.toUpperCase()), CpuArch.valueOf(arch.toUpperCase()));
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		int read = 0;
+		byte[] buffer = new byte[1024];
+		while (read != -1) {
+			read = in.read(buffer);
+			if (read != -1) {
+				out.write(buffer, 0, read);
+			}
+		}
+		out.close();
+		return out.toByteArray();
+
+	}
 }

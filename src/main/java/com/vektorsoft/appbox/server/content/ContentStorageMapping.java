@@ -8,6 +8,9 @@
 
 package com.vektorsoft.appbox.server.content;
 
+import com.vektorsoft.appbox.server.model.CpuArch;
+import com.vektorsoft.appbox.server.model.OS;
+
 import java.net.URI;
 
 /**
@@ -28,4 +31,6 @@ public interface ContentStorageMapping {
 	URI getLauncherStorageLocation();
 
 	URI getAppStorageLocation(String applicationId);
+
+	URI getJvmStorageLocation(String version, OS os, CpuArch cpuArch);
 }

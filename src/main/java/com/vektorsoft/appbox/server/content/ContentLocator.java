@@ -12,6 +12,8 @@ package com.vektorsoft.appbox.server.content;
 import com.vektorsoft.appbox.server.exception.ContentException;
 import com.vektorsoft.appbox.server.model.CpuArch;
 import com.vektorsoft.appbox.server.model.OS;
+
+import javax.swing.text.AbstractDocument;
 import java.net.URI;
 
 /**
@@ -40,5 +42,7 @@ public interface ContentLocator {
     URI getContentLocation(String hash) throws ContentException;
     
     URI getApplicationConfigLocation(String applicationId, OS os, CpuArch arch) throws ContentException;
+
+    URI getJvmLocation(String version, OS os, CpuArch arch) throws ContentException;
 
 }

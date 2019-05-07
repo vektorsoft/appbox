@@ -9,7 +9,7 @@
 package com.vektorsoft.appbox.server.deployment;
 
 import com.vektorsoft.appbox.server.content.ContentStorage;
-import com.vektorsoft.appbox.server.content.JvmLauncher;
+import com.vektorsoft.appbox.server.content.entity.JvmLauncher;
 import com.vektorsoft.appbox.server.content.JvmLauncherRepository;
 import com.vektorsoft.appbox.server.deployment.impl.AppConfigFileCreator;
 import org.junit.Before;

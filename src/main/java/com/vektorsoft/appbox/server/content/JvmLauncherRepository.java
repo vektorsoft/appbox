@@ -8,11 +8,12 @@
 
 package com.vektorsoft.appbox.server.content;
 
+import com.vektorsoft.appbox.server.content.entity.JvmLauncher;
 import com.vektorsoft.appbox.server.model.CpuArch;
 import com.vektorsoft.appbox.server.model.OS;
 import org.springframework.data.repository.CrudRepository;
 
 public interface JvmLauncherRepository extends CrudRepository<JvmLauncher, String> {
 
-	JvmLauncher findFirstByOsAndCpuArchOrderByVersionDesc(OS os,CpuArch cpuArch);
+	JvmLauncher findFirstByOsAndCpuArchOrderByVersionDesc(OS os, CpuArch cpuArch);
 }

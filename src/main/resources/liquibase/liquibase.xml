@@ -66,4 +66,42 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="jvm_binary_data" author="vdjurovic" dbms="postgresql">
+        <createTable tableName="jvm_binary">
+            <column name="id" type="varchar">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="provider" type="varchar">
+                <constraints nullable="false" />
+            </column>
+            <column name="jdk_version" type="varchar">
+                <constraints nullable="false" />
+            </column>
+            <column name="distribution" type="varchar">
+                <constraints nullable="false" />
+            </column>
+            <column name="implementation" type="varchar">
+                <constraints nullable="false" />
+            </column>
+            <column name="os" type="varchar">
+                <constraints nullable="false" />
+            </column>
+            <column name="cpu_arch" type="varchar">
+                <constraints nullable="false" />
+            </column>
+            <column name="sem_ver" type="varchar">
+                <constraints nullable="false" />
+            </column>
+            <column name="file_name" type="varchar">
+                <constraints nullable="false" />
+            </column>
+            <column name="hash" type="varchar">
+                <constraints nullable="false" />
+            </column>
+            <column name="size" type="bigint">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>
