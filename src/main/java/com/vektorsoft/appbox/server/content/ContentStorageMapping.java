@@ -32,5 +32,5 @@ public interface ContentStorageMapping {
 
 	URI getAppStorageLocation(String applicationId);
 
-	URI getJvmStorageLocation(String version, OS os, CpuArch cpuArch);
+	URI getJvmStorageLocation();
 }

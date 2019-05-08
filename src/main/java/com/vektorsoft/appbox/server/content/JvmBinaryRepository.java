@@ -38,4 +38,6 @@ public interface JvmBinaryRepository extends CrudRepository<JvmBinary, String> {
 			CpuArch cpuArch,
 			String semVer
 	);
+
+	long countByFileName(String fileName);
 }

@@ -12,6 +12,11 @@ package com.vektorsoft.appbox.server.content.impl;
 import com.vektorsoft.appbox.server.content.ContentLocator;
 import com.vektorsoft.appbox.server.content.ContentStorage;
 import com.vektorsoft.appbox.server.content.ContentStorageMapping;
+import com.vektorsoft.appbox.server.content.JvmBinaryRepository;
+import com.vektorsoft.appbox.server.content.entity.JvmBinary;
+import com.vektorsoft.appbox.server.content.entity.JvmDistribution;
+import com.vektorsoft.appbox.server.content.entity.JvmImplementation;
+import com.vektorsoft.appbox.server.content.entity.JvmProvider;
 import com.vektorsoft.appbox.server.exception.ContentException;
 import com.vektorsoft.appbox.server.model.CpuArch;
 import com.vektorsoft.appbox.server.model.OS;
@@ -45,6 +50,8 @@ public class FileSystemStorage implements ContentStorage {
 
 	@Autowired
 	private ContentStorageMapping contentMapping;
+	@Autowired
+	private JvmBinaryRepository jvmBinaryRepository;
 
 
 	@Override
@@ -61,10 +68,18 @@ public class FileSystemStorage implements ContentStorage {
 	}
 
 	@Override
-	public InputStream getJvmData(String version, OS os, CpuArch arch) throws ContentException {
-		URI uri = contentLocator.getJvmLocation(version, os, arch);
+	public InputStream getJvmData(JvmProvider provider, String jdkVersion, JvmDistribution distribution, JvmImplementation implementation, OS os, CpuArch cpuArch, String semVer) throws ContentException {
+		JvmBinary binary;
+		if(semVer != null) {
+			binary = jvmBinaryRepository.findByProviderAndJdkVersionAndDistributionAndImplementationAndOsAndCpuArchAndSemVer(provider, jdkVersion, distribution, implementation, os, cpuArch, semVer);
+		} else {
+			binary = jvmBinaryRepository.findFirstByProviderAndJdkVersionAndDistributionAndImplementationAndOsAndCpuArchOrderBySemVerDesc(provider, jdkVersion, distribution, implementation, os, cpuArch);
+		}
+
+		URI uri = contentLocator.getContentLocation(binary.getHash());
 		return uriToInputStream(uri);
 	}
+
 
 	@Override
 	public void createContent(InputStream in, String expectedHash) throws ContentException {

@@ -73,10 +73,10 @@ public class FileSystemContentlocator implements ContentLocator {
 		return configFilePath.toUri();
 	}
 
-	@Override
-	public URI getJvmLocation(String version, OS os, CpuArch arch) throws ContentException {
-		URI jvmDirUri = contentStorageMapping.getJvmStorageLocation(version, os, arch);
-		var fileName = "jvm-11.0.2.tar.gz";
-		return Path.of(Path.of(jvmDirUri).toString(), fileName).toUri();
-	}
+//	@Override
+//	public URI getJvmLocation(String version, OS os, CpuArch arch) throws ContentException {
+//		URI jvmDirUri = contentStorageMapping.getJvmStorageLocation();
+//		var fileName = "jvm-11.0.2.tar.gz";
+//		return Path.of(Path.of(jvmDirUri).toString(), fileName).toUri();
+//	}
 }

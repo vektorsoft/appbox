@@ -9,6 +9,9 @@
 
 package com.vektorsoft.appbox.server.content;
 
+import com.vektorsoft.appbox.server.content.entity.JvmDistribution;
+import com.vektorsoft.appbox.server.content.entity.JvmImplementation;
+import com.vektorsoft.appbox.server.content.entity.JvmProvider;
 import com.vektorsoft.appbox.server.exception.ContentException;
 import com.vektorsoft.appbox.server.model.CpuArch;
 import com.vektorsoft.appbox.server.model.OS;
@@ -26,7 +29,17 @@ public interface ContentStorage {
     
     InputStream getBinaryData(String hash) throws ContentException;
 
-    InputStream getJvmData(String version, OS os, CpuArch arch) throws ContentException;
+    /**
+     * Returns input stream for JVM binary distribution data.
+     *
+     */
+    InputStream getJvmData(JvmProvider provider,
+                           String jdkVersion,
+                           JvmDistribution distribution,
+                           JvmImplementation implementation,
+                           OS os,
+                           CpuArch cpuArch,
+                           String semVer) throws ContentException;
 
     /**
      * Store content from input file into backend storage. Content hash must match provided hash. If hashes do not match,

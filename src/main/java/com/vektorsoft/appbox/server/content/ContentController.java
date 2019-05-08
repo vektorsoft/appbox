@@ -8,7 +8,9 @@
 
 package com.vektorsoft.appbox.server.content;
 
-import com.vektorsoft.appbox.server.content.ContentStorage;
+import com.vektorsoft.appbox.server.content.entity.JvmDistribution;
+import com.vektorsoft.appbox.server.content.entity.JvmImplementation;
+import com.vektorsoft.appbox.server.content.entity.JvmProvider;
 import com.vektorsoft.appbox.server.exception.ContentException;
 import com.vektorsoft.appbox.server.model.CpuArch;
 import com.vektorsoft.appbox.server.model.OS;
@@ -17,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
+import java.util.Optional;
 
 /**
  * @author Vladimir Djurovic <vdjurovic@vektorsoft.com>
@@ -61,12 +64,27 @@ public class ContentController {
 		return out.toByteArray();
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/jvm/{version}/{os}/{arch}")
+	@RequestMapping(method = RequestMethod.GET, value = "/jvm")
 	public @ResponseBody
-	byte[] downloadJvm(@PathVariable("version") String version,
-					   @PathVariable("os") String os,
-					   @PathVariable("arch") String arch) throws ContentException, IOException {
-		InputStream in = storageService.getJvmData(version, OS.valueOf(os.toUpperCase()), CpuArch.valueOf(arch.toUpperCase()));
+	byte[] downloadJvm(@RequestParam(name = "provider", required = false) JvmProvider provider,
+					   @RequestParam(name = "jdkversion") String jdkVersion,
+					   @RequestParam(name = "distribution", required = false)JvmDistribution distribution,
+					   @RequestParam(name = "implementation", required = false)JvmImplementation implementation,
+					   @RequestParam(name = "os") String os,
+					   @RequestParam(name = "cpu") String arch,
+					   @RequestParam(name = "semver", required = false) String semVer) throws ContentException, IOException {
+		var osValue = OS.valueOf(os.toUpperCase());
+		var cpuValue = CpuArch.valueOf(arch.toUpperCase());
+		if(provider == null) {
+			provider = JvmProvider.OPENJDK;
+		}
+		if(distribution == null) {
+			distribution = JvmDistribution.JRE;
+		}
+		if(implementation == null) {
+			implementation = JvmImplementation.OPENJ9;
+		}
+		InputStream in = storageService.getJvmData(provider, jdkVersion, distribution, implementation, osValue, cpuValue, semVer);
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		int read = 0;
 		byte[] buffer = new byte[1024];

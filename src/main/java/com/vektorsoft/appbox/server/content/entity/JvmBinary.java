@@ -74,4 +74,5 @@ public class JvmBinary {
 	private String fileName;
 	private String hash;
 	private Long size;
+
 }

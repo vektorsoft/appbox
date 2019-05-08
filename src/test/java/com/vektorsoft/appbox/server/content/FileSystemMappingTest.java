@@ -75,7 +75,7 @@ public class FileSystemMappingTest {
 
 	@Test
 	public void jvmStorageLocationTest() {
-		URI uri = storageMapping.getJvmStorageLocation("11", OS.LINUX, CpuArch.X86);
+		URI uri = storageMapping.getJvmStorageLocation();
 		Path path = Path.of(uri);
 		assertTrue(path.startsWith(currentDir));
 		assertTrue(path.endsWith(Path.of(currentDir.toString(), "target", "content", "jvm", "11", "linux", "x86")));

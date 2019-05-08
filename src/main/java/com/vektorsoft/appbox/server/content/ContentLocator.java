@@ -43,6 +43,6 @@ public interface ContentLocator {
     
     URI getApplicationConfigLocation(String applicationId, OS os, CpuArch arch) throws ContentException;
 
-    URI getJvmLocation(String version, OS os, CpuArch arch) throws ContentException;
+   // URI getJvmLocation(String version, OS os, CpuArch arch) throws ContentException;
 
 }
