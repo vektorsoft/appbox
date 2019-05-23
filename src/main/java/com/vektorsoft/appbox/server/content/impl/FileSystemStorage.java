@@ -69,17 +69,21 @@ public class FileSystemStorage implements ContentStorage {
 
 	@Override
 	public InputStream getJvmData(JvmProvider provider, String jdkVersion, JvmDistribution distribution, JvmImplementation implementation, OS os, CpuArch cpuArch, String semVer) throws ContentException {
+		JvmBinary binary = getJvmInfo(provider, jdkVersion, distribution, implementation, os, cpuArch, semVer);
+		URI uri = contentLocator.getContentLocation(binary.getHash());
+		return uriToInputStream(uri);
+	}
+
+	@Override
+	public JvmBinary getJvmInfo(JvmProvider provider, String jdkVersion, JvmDistribution distribution, JvmImplementation implementation, OS os, CpuArch cpuArch, String semVer) {
 		JvmBinary binary;
 		if(semVer != null) {
 			binary = jvmBinaryRepository.findByProviderAndJdkVersionAndDistributionAndImplementationAndOsAndCpuArchAndSemVer(provider, jdkVersion, distribution, implementation, os, cpuArch, semVer);
 		} else {
 			binary = jvmBinaryRepository.findFirstByProviderAndJdkVersionAndDistributionAndImplementationAndOsAndCpuArchOrderBySemVerDesc(provider, jdkVersion, distribution, implementation, os, cpuArch);
 		}
-
-		URI uri = contentLocator.getContentLocation(binary.getHash());
-		return uriToInputStream(uri);
+		return binary;
 	}
-
 
 	@Override
 	public void createContent(InputStream in, String expectedHash) throws ContentException {

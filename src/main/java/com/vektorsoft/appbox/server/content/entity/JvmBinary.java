@@ -8,10 +8,12 @@
 
 package com.vektorsoft.appbox.server.content.entity;
 
+import com.vektorsoft.appbox.server.content.JvmInfoDTO;
 import com.vektorsoft.appbox.server.model.CpuArch;
 import com.vektorsoft.appbox.server.model.OS;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
+import org.modelmapper.ModelMapper;
 
 import javax.persistence.*;
 
@@ -29,8 +31,11 @@ public class JvmBinary {
 	public static JvmDistribution DEFAULT_DISTRIBUTION = JvmDistribution.JRE;
 	public static JvmImplementation DEFAULT_IMPLEMENTATION = JvmImplementation.OPENJ9;
 
-	public JvmBinary() {
+	@Transient
+	private final ModelMapper mapper;
 
+	public JvmBinary() {
+		mapper = new ModelMapper();
 	}
 
 	public JvmBinary(JvmBinary source) {
@@ -74,5 +79,9 @@ public class JvmBinary {
 	private String fileName;
 	private String hash;
 	private Long size;
+
+	public JvmInfoDTO convertToDTO() {
+		return mapper.map(this, JvmInfoDTO.class);
+	}
 
 }

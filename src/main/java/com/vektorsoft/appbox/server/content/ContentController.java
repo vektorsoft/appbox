@@ -8,6 +8,7 @@
 
 package com.vektorsoft.appbox.server.content;
 
+import com.vektorsoft.appbox.server.content.entity.JvmBinary;
 import com.vektorsoft.appbox.server.content.entity.JvmDistribution;
 import com.vektorsoft.appbox.server.content.entity.JvmImplementation;
 import com.vektorsoft.appbox.server.content.entity.JvmProvider;
@@ -97,5 +98,28 @@ public class ContentController {
 		out.close();
 		return out.toByteArray();
 
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/jvminfo")
+	public @ResponseBody JvmInfoDTO getJvmBinaryInfo(@RequestParam(name = "provider", required = false) JvmProvider provider,
+													 @RequestParam(name = "jdkversion") String jdkVersion,
+													 @RequestParam(name = "distribution", required = false)JvmDistribution distribution,
+													 @RequestParam(name = "implementation", required = false)JvmImplementation implementation,
+													 @RequestParam(name = "os") String os,
+													 @RequestParam(name = "cpu") String arch,
+													 @RequestParam(name = "semver", required = false) String semVer) {
+		var osValue = OS.valueOf(os.toUpperCase());
+		var cpuValue = CpuArch.valueOf(arch.toUpperCase());
+		if(provider == null) {
+			provider = JvmProvider.OPENJDK;
+		}
+		if(distribution == null) {
+			distribution = JvmDistribution.JRE;
+		}
+		if(implementation == null) {
+			implementation = JvmImplementation.OPENJ9;
+		}
+		JvmBinary binary = storageService.getJvmInfo(provider, jdkVersion, distribution, implementation, osValue, cpuValue, semVer);
+		return binary.convertToDTO();
 	}
 }
