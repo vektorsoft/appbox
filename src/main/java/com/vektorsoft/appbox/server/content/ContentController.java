@@ -119,6 +119,9 @@ public class ContentController {
 		if(implementation == null) {
 			implementation = JvmImplementation.OPENJ9;
 		}
+		if(semVer != null && (semVer.isBlank() || semVer.isEmpty())) {
+			semVer = null;
+		}
 		JvmBinary binary = storageService.getJvmInfo(provider, jdkVersion, distribution, implementation, osValue, cpuValue, semVer);
 		return binary.convertToDTO();
 	}
