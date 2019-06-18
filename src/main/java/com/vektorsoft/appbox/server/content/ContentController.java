@@ -15,12 +15,15 @@ import com.vektorsoft.appbox.server.content.entity.JvmProvider;
 import com.vektorsoft.appbox.server.exception.ContentException;
 import com.vektorsoft.appbox.server.model.CpuArch;
 import com.vektorsoft.appbox.server.model.OS;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.util.Optional;
 
 /**
  * @author Vladimir Djurovic <vdjurovic@vektorsoft.com>
@@ -49,25 +52,13 @@ public class ContentController {
 
 
 	@RequestMapping(method = RequestMethod.GET, value = "/apps/content/{hash}")
-	public @ResponseBody
-	byte[] getBinaryData(@PathVariable("hash") String hash) throws ContentException, IOException {
+	public ResponseEntity<InputStreamResource> getBinaryData(@PathVariable("hash") String hash) throws ContentException, IOException {
 		InputStream in = storageService.getBinaryData(hash);
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		int read = 0;
-		byte[] buffer = new byte[1024];
-		while (read != -1) {
-			read = in.read(buffer);
-			if (read != -1) {
-				out.write(buffer, 0, read);
-			}
-		}
-		out.close();
-		return out.toByteArray();
+		return ResponseEntity.ok(new InputStreamResource(in));
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/jvm")
-	public @ResponseBody
-	byte[] downloadJvm(@RequestParam(name = "provider", required = false) JvmProvider provider,
+	public ResponseEntity<InputStreamResource> downloadJvm(@RequestParam(name = "provider", required = false) JvmProvider provider,
 					   @RequestParam(name = "jdkversion") String jdkVersion,
 					   @RequestParam(name = "distribution", required = false)JvmDistribution distribution,
 					   @RequestParam(name = "implementation", required = false)JvmImplementation implementation,
@@ -86,18 +77,7 @@ public class ContentController {
 			implementation = JvmImplementation.OPENJ9;
 		}
 		InputStream in = storageService.getJvmData(provider, jdkVersion, distribution, implementation, osValue, cpuValue, semVer);
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		int read = 0;
-		byte[] buffer = new byte[1024];
-		while (read != -1) {
-			read = in.read(buffer);
-			if (read != -1) {
-				out.write(buffer, 0, read);
-			}
-		}
-		out.close();
-		return out.toByteArray();
-
+		return ResponseEntity.ok(new InputStreamResource(in));
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/jvminfo")
@@ -110,7 +90,7 @@ public class ContentController {
 													 @RequestParam(name = "semver", required = false) String semVer) {
 		var osValue = OS.valueOf(os.toUpperCase());
 		var cpuValue = CpuArch.valueOf(arch.toUpperCase());
-		if(provider == null) {
+		if(provider == null)  {
 			provider = JvmProvider.OPENJDK;
 		}
 		if(distribution == null) {
